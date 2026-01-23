@@ -1,10 +1,12 @@
-import jsPDF from "jspdf"
-import autoTable from "jspdf-autotable"
 import { format } from "date-fns"
 import type { ReportEntry } from "@/hooks/use-reports-data"
 
-export const generatePDF = (data: ReportEntry[], orgName: string) => {
-    const doc = jsPDF()
+export const generatePDF = async (data: ReportEntry[], orgName: string) => {
+    // Lazy load libraries
+    const { default: jsPDF } = await import("jspdf")
+    const { default: autoTable } = await import("jspdf-autotable")
+
+    const doc = new jsPDF()
 
     // Title
     doc.setFontSize(20)
