@@ -69,6 +69,9 @@ export function useTimeTracking() {
 
     useEffect(() => {
         if (activeEntry?.status === "active") {
+            // Immediate calculation
+            calculateElapsedTime(activeEntry)
+
             intervalRef.current = setInterval(() => {
                 calculateElapsedTime(activeEntry)
             }, 1000)
@@ -79,6 +82,18 @@ export function useTimeTracking() {
         return () => {
             if (intervalRef.current) clearInterval(intervalRef.current)
         }
+    }, [activeEntry])
+
+    // Background sync handler
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible' && activeEntry) {
+                calculateElapsedTime(activeEntry)
+            }
+        }
+
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
     }, [activeEntry])
 
     const clockIn = async (projectId?: string, taskId?: string) => {

@@ -2,12 +2,13 @@ import type { ReactNode } from "react"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { MobileNav } from "@/components/layout/MobileNav"
 import { useAuth } from "@/components/auth-context"
-import { Search, Bell, Clock } from "lucide-react"
+import { Search, Clock } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useTheme } from "@/components/theme-provider"
 import { Button } from "@/components/ui/button"
 import { useLocation } from "react-router-dom"
 import { AvatarDropdown } from "@/components/layout/AvatarDropdown"
+import { NotificationsDropdown } from "@/components/layout/NotificationsDropdown"
 
 export default function Layout({ children }: { children: ReactNode }) {
     const { user } = useAuth()
@@ -53,9 +54,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                             <Input placeholder="Buscar..." className="pl-8 rounded-full bg-card/50 border-none focus-visible:ring-1 focus-visible:ring-primary/50" />
                         </div>
 
-                        <Button variant="ghost" size="icon" className="rounded-full bg-card/50 shrink-0">
-                            <Bell className="h-5 w-5" />
-                        </Button>
+                        <NotificationsDropdown />
 
                         <Button
                             variant="ghost"
