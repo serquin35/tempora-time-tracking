@@ -30,21 +30,15 @@ export default function Team() {
         setJoinLoading(true)
 
         try {
-            const { data: org, error: orgError } = await supabase
-                .from('organizations')
-                .select('name, id')
-                .eq('id', cleanCode)
-                .maybeSingle()
+            // Use secure RPC function to bypass RLS restrictions
+            const { data, error } = await supabase.rpc('join_organization', {
+                _org_id: cleanCode
+            }) as any
 
-            if (orgError) throw orgError
-            if (!org) throw new Error("Código no encontrado o no válido")
+            if (error) throw error
+            if (!data.success) throw new Error(data.message)
 
-            const { error: joinError } = await supabase
-                .from('organization_members')
-                .upsert({ organization_id: org.id, user_id: user.id, role: 'member' })
-
-            if (joinError) throw joinError
-            alert(`¡Genial! Te has unido a ${org.name}`)
+            alert(data.message)
             window.location.reload()
         } catch (err: any) {
             console.error("Join error:", err)
@@ -54,7 +48,7 @@ export default function Team() {
         }
     }
 
-    const isPersonal = !organization || organization?.name?.toLowerCase() === "personal workspace"
+    const isPersonal = !organization || organization?.type === 'personal'
     const canManage = userRole === 'owner' || userRole === 'admin'
 
     return (

@@ -4,6 +4,7 @@ export type Organization = {
     slug: string
     owner_id: string
     created_at: string
+    type: 'personal' | 'business'
 }
 
 export type OrganizationMember = {

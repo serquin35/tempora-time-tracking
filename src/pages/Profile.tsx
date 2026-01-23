@@ -22,7 +22,9 @@ import {
     KeyRound,
     Building2,
     Users as UsersIcon,
-    ArrowRight
+    ArrowRight,
+    Briefcase,
+    PlusCircle
 } from "lucide-react"
 
 export default function Profile() {
@@ -42,6 +44,8 @@ export default function Profile() {
     // Organization states
     const [joinCode, setJoinCode] = useState("")
     const [joinLoading, setJoinLoading] = useState(false)
+    const [newOrgName, setNewOrgName] = useState("")
+    const [createOrgLoading, setCreateOrgLoading] = useState(false)
 
     // Messages
     const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null)
@@ -97,40 +101,80 @@ export default function Profile() {
 
     const handleJoinOrganization = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!joinCode || !user) return
+        const cleanCode = joinCode.trim()
+        if (!cleanCode || !user) return
 
         setJoinLoading(true)
         setMessage(null)
 
         try {
-            // 1. Check if organization exists
-            const { data: org, error: orgError } = await supabase
-                .from('organizations')
-                .select('name, id')
-                .eq('id', joinCode)
-                .maybeSingle()
+            // Use secure RPC function to bypass RLS restrictions
+            const { data, error } = await supabase.rpc('join_organization', {
+                _org_id: cleanCode
+            }) as any
 
-            if (orgError || !org) {
-                throw new Error("Código de organización inválido o no encontrado.")
-            }
+            if (error) throw error
+            if (!data.success) throw new Error(data.message)
 
-            // 2. Add member
-            const { error: joinError } = await supabase
-                .from('organization_members')
-                .upsert({
-                    organization_id: org.id,
-                    user_id: user.id,
-                    role: 'member'
-                })
-
-            if (joinError) throw joinError
-
-            setMessage({ text: `Te has unido correctamente a ${org.name}. Por favor recarga la página.`, type: 'success' })
+            setMessage({ text: data.message + ". Por favor recarga la página.", type: 'success' })
             setJoinCode("")
+
+            // Optional: Auto-reload after short delay
+            setTimeout(() => window.location.reload(), 1500)
         } catch (error: any) {
             setMessage({ text: error.message || "Error al unirse a la organización", type: 'error' })
         } finally {
             setJoinLoading(false)
+        }
+    }
+
+    const handleCreateOrganization = async (e: React.FormEvent) => {
+        e.preventDefault()
+        const name = newOrgName.trim()
+        if (!name || !user) return
+
+        setCreateOrgLoading(true)
+        setMessage(null)
+
+        try {
+            // Generate slug from name
+            const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(Math.random() * 1000)
+
+            // 1. Create Organization
+            const { data: org, error: orgError } = await supabase
+                .from('organizations')
+                .insert({
+                    name: name,
+                    slug: slug,
+                    type: 'business',
+                    owner_id: user.id
+                })
+                .select()
+                .single()
+
+            if (orgError) throw orgError
+
+            // 2. Add as Owner
+            const { error: memberError } = await supabase
+                .from('organization_members')
+                .insert({
+                    organization_id: org.id,
+                    user_id: user.id,
+                    role: 'owner'
+                })
+
+            if (memberError) throw memberError
+
+            setMessage({ text: `Organización "${name}" creada exitosamente. Recargando...`, type: 'success' })
+            setNewOrgName("")
+
+            // Reload to update context
+            setTimeout(() => window.location.reload(), 1500)
+        } catch (error: any) {
+            console.error(error)
+            setMessage({ text: error.message || "Error al crear la organización", type: 'error' })
+        } finally {
+            setCreateOrgLoading(false)
         }
     }
 
@@ -177,20 +221,20 @@ export default function Profile() {
             )}
 
             <Tabs defaultValue="general" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 p-1 bg-muted/50 backdrop-blur-sm">
-                    <TabsTrigger value="general" className="gap-2">
+                <TabsList className="flex flex-wrap w-full p-1 bg-muted/50 backdrop-blur-sm h-auto gap-1">
+                    <TabsTrigger value="general" className="flex-1 gap-2 min-w-[100px]">
                         <User className="w-4 h-4" />
                         <span className="hidden sm:inline">General</span>
                     </TabsTrigger>
-                    <TabsTrigger value="security" className="gap-2">
+                    <TabsTrigger value="security" className="flex-1 gap-2 min-w-[100px]">
                         <Shield className="w-4 h-4" />
                         <span className="hidden sm:inline">Seguridad</span>
                     </TabsTrigger>
-                    <TabsTrigger value="preferences" className="gap-2">
+                    <TabsTrigger value="preferences" className="flex-1 gap-2 min-w-[100px]">
                         <Settings className="w-4 h-4" />
                         <span className="hidden sm:inline">Preferencias</span>
                     </TabsTrigger>
-                    <TabsTrigger value="organization" className="gap-2 text-lime-500">
+                    <TabsTrigger value="organization" className="flex-1 gap-2 text-lime-500 min-w-[120px]">
                         <Building2 className="w-4 h-4" />
                         <span className="hidden sm:inline">Organización</span>
                     </TabsTrigger>
@@ -418,6 +462,29 @@ export default function Profile() {
                                     <Button type="submit" disabled={joinLoading || !joinCode} className="bg-lime-500 hover:bg-lime-600 text-black px-6">
                                         {joinLoading ? "Uniendo..." : "Unirme"}
                                         {!joinLoading && <ArrowRight className="ml-2 w-4 h-4" />}
+                                    </Button>
+                                </form>
+                            </div>
+
+                            <Separator className="bg-border" />
+
+                            <div className="p-6 rounded-2xl bg-muted/30 border border-border space-y-4">
+                                <div className="space-y-1">
+                                    <h4 className="font-semibold text-foreground flex items-center gap-2">
+                                        <Briefcase className="w-4 h-4 text-lime-500" /> Crear Nueva Empresa
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground">Crea un espacio de trabajo para tu equipo o negocio.</p>
+                                </div>
+                                <form onSubmit={handleCreateOrganization} className="flex gap-2">
+                                    <Input
+                                        placeholder="Nombre de tu empresa (ej. Acme Corp)"
+                                        className="bg-background border-zinc-700"
+                                        value={newOrgName}
+                                        onChange={(e) => setNewOrgName(e.target.value)}
+                                    />
+                                    <Button type="submit" disabled={createOrgLoading || !newOrgName} className="bg-zinc-800 hover:bg-zinc-700 text-white px-6">
+                                        {createOrgLoading ? "Creando..." : "Crear"}
+                                        {!createOrgLoading && <PlusCircle className="ml-2 w-4 h-4" />}
                                     </Button>
                                 </form>
                             </div>

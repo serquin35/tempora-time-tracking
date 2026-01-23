@@ -1,4 +1,4 @@
-import { LogOut, Settings, User } from "lucide-react"
+import { LogOut, Settings, User, Building2, Check } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/components/auth-context"
 import {
@@ -12,7 +12,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export function AvatarDropdown() {
-    const { user, signOut } = useAuth()
+    const { user, signOut, organizations, organization, switchOrganization } = useAuth()
     const navigate = useNavigate()
 
     const handleSignOut = async () => {
@@ -42,6 +42,33 @@ export function AvatarDropdown() {
                         </p>
                     </div>
                 </DropdownMenuLabel>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+                    Workspaces
+                </DropdownMenuLabel>
+                {organizations.map((org) => (
+                    <DropdownMenuItem
+                        key={org.id}
+                        onClick={() => switchOrganization(org.id)}
+                        className="cursor-pointer justify-between"
+                    >
+                        <div className="flex items-center">
+                            {org.type === 'personal' ? (
+                                <User className="mr-2 h-4 w-4 text-muted-foreground" />
+                            ) : (
+                                <Building2 className="mr-2 h-4 w-4 text-blue-500" />
+                            )}
+                            <span className={organization?.id === org.id ? "font-medium" : ""}>
+                                {org.name}
+                            </span>
+                        </div>
+                        {organization?.id === org.id && (
+                            <Check className="h-4 w-4 text-lime-500" />
+                        )}
+                    </DropdownMenuItem>
+                ))}
 
                 <DropdownMenuSeparator />
 

@@ -44,6 +44,6 @@ A medida que crecen los registros de tiempo (`time_entries`), las consultas pued
 ---
 
 ## Orden de Ejecución Sugerido
-1.  **PWA (5.1)**: Alto impacto visual y funcional imediato.
+1.  **PWA (5.1)**: Alto impacto visual y funcional inediato.
 2.  **Lazy Loading (5.3)**: Mejora notable en la carga inicial.
 3.  **Seguridad & DB (5.2 & 5.4)**: Invisible pero crítico para escalabilidad.
