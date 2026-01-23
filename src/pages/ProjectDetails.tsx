@@ -3,7 +3,7 @@ import { useProjectDetails } from "@/hooks/use-project-details"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Clock, DollarSign, Briefcase, Calendar } from "lucide-react"
+import { ArrowLeft, Clock, DollarSign, Briefcase } from "lucide-react"
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts"
 import { Skeleton } from "@/components/ui/skeleton"
 
