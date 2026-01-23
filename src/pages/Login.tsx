@@ -39,7 +39,7 @@ export default function Login() {
                 <div className="h-8 w-8 bg-lime-400 rounded-lg flex items-center justify-center">
                     <Clock className="h-5 w-5 text-black" />
                 </div>
-                <span className="text-xl font-bold tracking-wider">flux</span>
+                <span className="text-xl font-bold tracking-wider">tempora</span>
             </div>
 
             <Card className="w-full max-w-sm">
