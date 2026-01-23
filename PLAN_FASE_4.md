@@ -1,55 +1,59 @@
-# Plan Fase 4: Reportes Avanzados, Exportación y Cumplimiento
-
-Esta fase se centra en transformar los datos recopilados en información útil y entregable para el usuario y sus clientes.
-
-## Objetivos Principales
-1.  **Potenciar los Reportes**: Permitir análisis profundos con filtros personalizados.
-2.  **Exportación Profesional**: Generar entregables (PDF/Excel) para clientes y nóminas.
-3.  **Facturación Simple**: Convertir tiempo en dinero generado directamente desde la app.
+# 📅 PLAN FASE 4: Visualización y Reportes Avanzados
+> **Objetivo:** Transformar los datos crudos en información visual útil para la toma de decisiones, aprovechando la estructura multi-workspace ya implementada.
 
 ---
 
-## 4.1 Exportación de Datos (Prioridad Alta)
-- [x] **Instalar dependencias**: `jspdf`, `jspdf-autotable`, `xlsx` (o similar para CSV/Excel).
-- [x] **Utilidad de Exportación**: Crear `src/lib/export-utils.ts` para manejar la lógica de generación de archivos.
-  - [x] Función `exportToCSV(data, filename, isAdmin)` con soporte para datos financieros
-  - [x] Función `exportToPDF(data, title, filename, isAdmin)` con diseño corporativo y datos financieros.
-- [x] **Integración en UI**:
-  - [x] Añadir botones "Exportar a CSV" y "Exportar a PDF" en la página `Reports`.
-  - [x] Asegurar que exporten los datos *filtrados* actuales.
-  - [x] Incluir columnas de "Tarifa/Hora" e "Ingresos" para admins.
-  - [x] Mostrar "Total Ingresos" en resumen del PDF para admins.
+## 🏗️ 1. Dashboard Interactivo
+Convertir el Dashboard en el centro de comando principal.
 
-## 4.2 Filtros de Fecha Avanzados
-- [x] **Componente DateRangePicker**: Implementar un selector de rango de fechas personalizado (usando `react-day-picker` de shadcn/ui).
-- [x] **Integración en Reportes**:
-  - [x] Reemplazar/Complementar el selector de "Esta semana/Este mes" con el rango personalizado.
-  - [x] Actualizar `useReportsData` para aceptar `startDate` y `endDate` arbitrarios.
+- [x] **KPI Cards en Tiempo Real:**
+  - Total horas hoy (combinando histórico + timer activo).
+  - Nivel de enfoque (calculado en base a pomodoros completados).
+  - Dinero ganado hoy (estimado segun tarifa horaria, si aplica).
+- [x] **Gráfico de Actividad Semanal Mejorado:**
+  - [x] Usar `recharts` para un gráfico de barras interactivo.
+  - [x] Tooltip personalizado con detalles del día.
+  - [x] Línea de referencia (Meta diaria).
+- [ ] **Lista de Actividad Reciente:**
+  - Mostrar últimos 5 time entries con posibilidad de editarlos rápido.
+  - "Continuar" botón para reanudar un proyecto reciente con un clic.
 
-## 4.3 Facturación Simple (Feature "Wow")
-- [x] **Configuración de Tarifas**:
-  - [x] Añadir campo `hourly_rate` (tarifa por hora) a la tabla `projects` (o `organization_members` para coste interno).
-  - [x] UI para definir la tarifa en la creación/edición de proyectos.
-  - [x] Visualización de tarifas en tarjetas de proyecto (solo para admins).
-  - [x] Cálculo de ingresos en reportes (horas × tarifa).
-  - [x] Tarjeta de "Total Ingresos" en Reports (solo para admins).
-  - [x] Columna de "Ingresos" en historial detallado (solo para admins).
-- [x] **Generador de Facturas**:
-  - [x] Botón "Generar Factura" desde una vista de reporte filtrada por cliente/proyecto.
-  - [x] Preview de factura con desglose de horas x tarifa.
-  - [x] Exportación de la factura a PDF con diseño profesional.
-  - [x] Cálculo automático de IVA y configuración personalizada de impuestos.
-  - [x] Campos personalizables: número de factura, cliente, dirección, notas.
-  - [x] Desglose por proyecto con subtotales.
+## 📊 2. Sistema de Reportes Profesional
+Mejorar la página `/reports` para que sea una herramienta de análisis potente.
 
-## 4.4 Mejoras de UX en Reportes
-- [x] **Gráficos Interactivos**: Mejorar la visualización de datos con gráficos de `recharts` más detallados (e.g., distribución por tarea).
-- [x] **Resumen Financiero**: Mostrar "Total Estimado" en dinero basado en las horas trabajadas.
+- [x] **Filtros Avanzados:**
+  - Rango de Fechas (Picker mejorado).
+  - Multi-select de Usuarios (para admins).
+  - Filtro por Etiquetas/Tags.
+- [x] **Visualización de Datos:**
+  - **Distribución de Tiempo:** Gráfico de Donut (Tiempo por Proyecto).
+  - **Tendencia Mensual:** Gráfico de Línea (Horas por día acumuladas).
+- [x] **Tabla de Detalles:**
+  - Tabla paginada con todos los registros.
+  - Edición inline de registros desde la tabla de reportes.
+- [ ] **Exportación Robusta:**
+  - PDF con logo de la empresa y resumen ejecutivo.
+  - CSV limpio para importar en Excel/Contabilidad.
+
+## 📁 3. Detalles de Proyecto (`/projects/[id]`)
+Nueva página para gestión profunda de proyectos individuales.
+
+- [ ] **Header de Proyecto:**
+  - Barra de progreso de presupuesto (Horas estimadas vs Reales).
+  - Estado del proyecto (Activo, Pausado, Completado).
+- [ ] **Desglose de Tareas:**
+  - Lista de tareas dentro del proyecto y tiempo dedicado a cada una.
+- [ ] **Equipo del Proyecto:**
+  - Quién ha trabajado en este proyecto y cuánto tiempo.
+
+## 🧪 Testing
+- [ ] Validar cálculos de reportes cruzando fechas.
+- [ ] Verificar que usuarios 'Member' solo vean sus propios reportes (excepto si RLS lo permite, que en nuestra app miembros solo ven lo suyo).
+- [ ] Probar exportación con grandes volúmenes de datos.
 
 ---
 
-## Orden de Ejecución
-1.  **Fundamentos de Exportación (4.1)**: Valor inmediato para el usuario.
-2.  **Filtros Avanzados (4.2)**: Necesario para reportes mensuales o trimestrales específicos.
-3.  **Facturación (4.3)**: El "broche de oro" de la fase.
-
+## 📝 Notas Técnicas
+- Usaremos `recharts` para todas las gráficas.
+- Los cálculos complejos se harán en el frontend (hooks) para no saturar la DB, ya que el volumen de datos por usuario/org es manejable.
+- Mantendremos `useReportsData` como el hook central de lógica.

@@ -10,10 +10,13 @@ export interface ReportEntry {
     clock_out: string | null
     total_hours: number | null
     status: string
+    description: string | null
     project_id: string | null
     task_id: string | null
     user_name: string
+    user_avatar: string | null
     project_name: string
+    project_color: string | null
     project_hourly_rate: number
     task_name: string
 }
@@ -40,8 +43,8 @@ export function useReportsData() {
                 .from('time_entries')
                 .select(`
                     *,
-                    projects(name, hourly_rate),
-                    profiles(full_name),
+                    projects(name, hourly_rate, color),
+                    profiles(full_name, avatar_url),
                     tasks(name)
                 `)
                 .eq('organization_id', organization.id)
@@ -58,7 +61,7 @@ export function useReportsData() {
             if (filters.userId !== "all") {
                 query = query.eq('user_id', filters.userId)
             }
-            if (filters.taskId !== "all") {
+            if (filters.taskId && filters.taskId !== "all") {
                 query = query.eq('task_id', filters.taskId)
             }
 
@@ -67,11 +70,21 @@ export function useReportsData() {
             if (error) throw error
 
             const formattedData: ReportEntry[] = (entries || []).map(entry => ({
-                ...entry,
+                id: entry.id,
+                user_id: entry.user_id,
+                clock_in: entry.clock_in,
+                clock_out: entry.clock_out,
+                total_hours: entry.total_hours,
+                status: entry.status,
+                description: entry.description,
+                project_id: entry.project_id,
+                task_id: entry.task_id,
                 user_name: (entry.profiles as any)?.full_name || "Desconocido",
+                user_avatar: (entry.profiles as any)?.avatar_url || null,
                 project_name: (entry.projects as any)?.name || "Sin Proyecto",
+                project_color: (entry.projects as any)?.color || "#cbd5e1",
                 project_hourly_rate: (entry.projects as any)?.hourly_rate || 0,
-                task_name: (entry.tasks as any)?.name || "Sin Tarea"
+                task_name: (entry.tasks as any)?.name || ""
             }))
 
             setData(formattedData)

@@ -16,7 +16,11 @@ export function ReportCharts({ data }: ReportChartsProps) {
         if (existing) {
             existing.value += hours;
         } else {
-            acc.push({ name: entry.project_name, value: hours });
+            acc.push({
+                name: entry.project_name,
+                value: hours,
+                color: entry.project_color || COLORS[acc.length % COLORS.length]
+            });
         }
         return acc;
     }, []).map(i => ({ ...i, value: Number(i.value.toFixed(2)) }));
@@ -40,7 +44,7 @@ export function ReportCharts({ data }: ReportChartsProps) {
                     <CardTitle className="text-sm font-medium">Horas por Proyecto</CardTitle>
                 </CardHeader>
                 <CardContent className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" minHeight={200}>
                         <PieChart>
                             <Pie
                                 data={projectData}
@@ -51,8 +55,8 @@ export function ReportCharts({ data }: ReportChartsProps) {
                                 paddingAngle={5}
                                 dataKey="value"
                             >
-                                {projectData.map((_, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                {projectData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color} />
                                 ))}
                             </Pie>
                             <Tooltip
@@ -76,7 +80,7 @@ export function ReportCharts({ data }: ReportChartsProps) {
                     <CardTitle className="text-sm font-medium">Horas por Usuario</CardTitle>
                 </CardHeader>
                 <CardContent className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" minHeight={200}>
                         <BarChart data={userData} layout="vertical">
                             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
                             <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />

@@ -14,6 +14,7 @@ import { exportToPDF, exportToCSV } from "@/lib/export-utils"
 import { ReportCharts } from "@/components/reports/report-charts"
 import { DatePickerWithRange } from "@/components/ui/date-range-picker"
 import { InvoiceDialog } from "@/components/dialogs/invoice-dialog"
+import { ReportsTable } from "@/components/reports/reports-table"
 
 export default function Reports() {
     const { userRole, organization } = useAuth()
@@ -208,6 +209,13 @@ export default function Reports() {
                         <CardTitle className="text-4xl text-foreground/80 font-mono">92%</CardTitle>
                     </CardHeader>
                 </Card>
+
+            </div>
+
+            {/* Tabla Detallada */}
+            <div className="space-y-4">
+                <h2 className="text-xl font-semibold tracking-tight">Detalle de Registros</h2>
+                <ReportsTable data={data} />
             </div>
 
             {/* Diálogo de Factura */}
@@ -217,6 +225,6 @@ export default function Reports() {
                 data={data}
                 organizationName={organization?.name || "Mi Organización"}
             />
-        </div>
+        </div >
     )
 }

@@ -17,7 +17,8 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    Cell
+    Cell,
+    ReferenceLine
 } from "recharts"
 
 export default function Dashboard() {
@@ -122,14 +123,22 @@ export default function Dashboard() {
                     </CardContent>
                 </Card>
 
+
+
                 <Card className="shadow-sm bg-card">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Bienestar</CardTitle>
+                        <CardTitle className="text-sm font-medium">Estado</CardTitle>
                         <div className="p-2 bg-red-500/10 rounded-lg"><Heart className="h-4 w-4 text-red-500" /></div>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">Óptimo</div>
-                        <p className="text-xs text-muted-foreground mt-1">Sincronizado</p>
+                        <div className="text-2xl font-bold">
+                            {(chartData[chartData.length - 1]?.total || 0) > 9 ? 'Exhausto' :
+                                (chartData[chartData.length - 1]?.total || 0) > 6 ? 'En Racha' :
+                                    (chartData[chartData.length - 1]?.total || 0) > 0 ? 'Calentando' : 'Fresco'}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            {(chartData[chartData.length - 1]?.total || 0) > 9 ? 'Tómate un descanso' : 'Sigue así'}
+                        </p>
                     </CardContent>
                 </Card>
             </div>
@@ -198,6 +207,7 @@ export default function Dashboard() {
                                                 />
                                             ))}
                                         </Bar>
+                                        <ReferenceLine y={8} stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" opacity={0.5} label={{ position: 'right', value: 'Meta 8h', fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                                     </BarChart>
                                 </ResponsiveContainer>
                             )}
@@ -257,6 +267,6 @@ export default function Dashboard() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </div >
     )
 }
