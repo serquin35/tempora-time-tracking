@@ -3,11 +3,11 @@ import { Sidebar } from "@/components/layout/Sidebar"
 import { MobileNav } from "@/components/layout/MobileNav"
 import { useAuth } from "@/components/auth-context"
 import { Search, Bell, Clock } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { useTheme } from "@/components/theme-provider"
 import { Button } from "@/components/ui/button"
 import { useLocation } from "react-router-dom"
+import { AvatarDropdown } from "@/components/layout/AvatarDropdown"
 
 export default function Layout({ children }: { children: ReactNode }) {
     const { user } = useAuth()
@@ -66,10 +66,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                             {theme === 'dark' ? '🌙' : '☀️'}
                         </Button>
 
-                        <Avatar className="h-8 w-8 md:h-10 md:w-10 ring-2 ring-primary/10 transition-transform hover:scale-110">
-                            <AvatarImage src={user?.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email}`} />
-                            <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
-                        </Avatar>
+                        <AvatarDropdown />
                     </div>
                 </header>
 

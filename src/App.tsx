@@ -18,9 +18,17 @@ const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"))
 
 function LoadingFallback() {
   return (
-    <div className="h-screen w-full flex flex-col items-center justify-center gap-2 bg-background text-foreground animate-in fade-in duration-300">
-      <Loader2 className="h-10 w-10 animate-spin text-primary" />
-      <p className="text-sm text-muted-foreground animate-pulse">Cargando Flux...</p>
+    <div className="h-screen w-full flex flex-col items-center justify-center gap-4 bg-background text-foreground">
+      <div className="relative">
+        <div className="h-16 w-16 bg-lime-400 rounded-2xl flex items-center justify-center animate-pulse">
+          <Loader2 className="h-8 w-8 animate-spin text-black" />
+        </div>
+        <div className="absolute inset-0 bg-lime-400/20 rounded-2xl blur-xl animate-pulse" />
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <p className="text-lg font-semibold animate-pulse">tempora</p>
+        <p className="text-sm text-muted-foreground">Cargando...</p>
+      </div>
     </div>
   )
 }
