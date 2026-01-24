@@ -102,6 +102,41 @@ export function useTimeTracking() {
             return
         }
 
+        // 1. Si ya tenemos una activeEntry en estado local, ciérrala primero
+        if (activeEntry) {
+            console.log("Auto-closing active session before starting new one...")
+            await clockOut()
+        }
+
+        // 2. Red de seguridad: Verificar en DB si hay alguna sesión colgada (por si el estado local falló)
+        // Esto previene que se queden sesiones "zombies" activas en otros dispositivos o pestañas
+        const { data: zombieEntries } = await supabase
+            .from("time_entries")
+            .select("id, clock_in")
+            .eq("user_id", user.id)
+            .in("status", ["active", "paused"])
+
+        if (zombieEntries && zombieEntries.length > 0) {
+            console.log("Cleaning up zombie sessions...", zombieEntries)
+            const now = new Date().toISOString()
+
+            // Cerramos todas las sesiones abiertas
+            for (const zombie of zombieEntries) {
+                const start = new Date(zombie.clock_in)
+                const totalHours = differenceInSeconds(new Date(), start) / 3600
+
+                await supabase
+                    .from("time_entries")
+                    .update({
+                        clock_out: now,
+                        status: "completed",
+                        total_hours: Number(totalHours.toFixed(2)),
+                    })
+                    .eq("id", zombie.id)
+            }
+        }
+
+        // 3. Ahora es seguro iniciar la nueva sesión
         const now = new Date().toISOString()
         const { data, error } = await supabase
             .from("time_entries")
