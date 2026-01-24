@@ -15,7 +15,6 @@ const Reports = lazy(() => import("@/pages/Reports"))
 const Projects = lazy(() => import("@/pages/Projects"))
 const Team = lazy(() => import("@/pages/Team"))
 const ProjectDetails = lazy(() => import("@/pages/ProjectDetails"))
-const FocusMode = lazy(() => import("@/pages/FocusMode"))
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"))
 
 function LoadingFallback() {
@@ -87,11 +86,6 @@ export default function App() {
               <Route path="/projects/:id" element={
                 <ProtectedRoute>
                   <ProjectDetails />
-                </ProtectedRoute>
-              } />
-              <Route path="/focus" element={
-                <ProtectedRoute>
-                  <FocusMode />
                 </ProtectedRoute>
               } />
               <Route path="/team" element={

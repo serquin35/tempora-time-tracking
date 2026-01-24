@@ -1,11 +1,10 @@
 import { useState } from "react"
 import { format } from "date-fns"
-import { useNavigate } from "react-router-dom"
 import { useTimeTracking } from "@/hooks/use-time-tracking"
 import { useProjects } from "@/hooks/use-projects"
 import { useTasks } from "@/hooks/use-tasks"
 import { Button } from "@/components/ui/button"
-import { Play, Pause, StopCircle, Clock, Expand } from "lucide-react"
+import { Play, Pause, StopCircle, Clock } from "lucide-react"
 import {
     Select,
     SelectContent,
@@ -17,7 +16,6 @@ import {
 import confetti from "canvas-confetti"
 
 export function CurrentStatus() {
-    const navigate = useNavigate()
     const { activeEntry, elapsedTime, clockIn, clockOut, togglePause, isLoading } = useTimeTracking()
     const { projects } = useProjects()
 
@@ -128,17 +126,6 @@ export function CurrentStatus() {
         <div className="h-full min-h-[16rem] bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white rounded-[1.5rem] p-6 md:p-8 flex flex-col justify-between relative overflow-hidden group transition-all duration-500 hover:shadow-2xl hover:shadow-lime-500/10 border border-zinc-200 dark:border-zinc-800">
             {/* Background Decoration - Adapted for Light Mode */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-lime-400/10 dark:bg-lime-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-
-            {/* Focus Mode Button */}
-            <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => navigate("/focus")}
-                className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-900 dark:text-white/50 dark:hover:text-white dark:hover:bg-white/10 rounded-full z-20"
-                title="Modo Focus (Pantalla completa)"
-            >
-                <Expand className="w-5 h-5" />
-            </Button>
 
             <div className="relative z-10 flex justify-between items-start">
                 <div className="space-y-1">
