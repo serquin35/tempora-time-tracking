@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react"
 import { CurrentStatus } from "@/components/time-tracking/current-status"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Activity, Zap, BarChart3, AlertCircle, Play, Flame, Loader2, Signal } from "lucide-react"
+import { Activity, Zap, BarChart3, AlertCircle, Play, Flame, Loader2 } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/components/auth-context"
 import { useTimeTracking } from "@/hooks/use-time-tracking"
@@ -249,68 +249,46 @@ export default function Dashboard() {
                     <CardContent>
                         <div className="space-y-4">
                             {recentEntries.length > 0 ? (
-                                recentEntries.map((entry) => {
-                                    // Check if this specific project/task combo is currently active
-                                    const isActive = activeEntry && activeEntry.project_id === entry.project_id && (activeEntry.task_id === entry.task_id || (!activeEntry.task_id && !entry.task_id));
-
-                                    return (
-                                        <div
-                                            key={entry.id}
-                                            className={`flex items-center justify-between p-3 border rounded-xl transition-all group ${isActive
-                                                ? 'bg-primary/5 border-primary/50 shadow-[0_0_15px_-3px_rgba(132,204,22,0.3)]'
-                                                : 'bg-background/50 border-border/20 hover:bg-background/80'}`}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <button
-                                                    onClick={() => handleResume(entry.id, entry.project_id, entry.task_id)}
-                                                    disabled={!!activeEntry || loadingEntryId === entry.id}
-                                                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed
-                                                        ${isActive
-                                                            ? 'bg-primary text-primary-foreground scale-110 shadow-lg shadow-primary/20'
-                                                            : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground'
-                                                        }`}
-                                                    title={isActive ? "En curso" : "Reanudar esta tarea"}
-                                                >
-                                                    {loadingEntryId === entry.id ? (
-                                                        <Loader2 className="w-5 h-5 animate-spin" />
-                                                    ) : isActive ? (
-                                                        <Signal className="w-5 h-5 animate-pulse" />
-                                                    ) : (
-                                                        <Play className="w-5 h-5 fill-current ml-0.5" />
-                                                    )}
-                                                </button>
-                                                <div className="flex flex-col">
-                                                    <span className={`font-semibold text-sm ${isActive ? 'text-primary' : ''}`}>
-                                                        {entry.projects?.name || "Sin Proyecto"}
+                                recentEntries.map((entry) => (
+                                    <div
+                                        key={entry.id}
+                                        className="flex items-center justify-between p-3 bg-background/50 border border-border/20 rounded-xl hover:bg-background/80 transition-all group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <button
+                                                onClick={() => handleResume(entry.id, entry.project_id, entry.task_id)}
+                                                disabled={!!activeEntry || loadingEntryId === entry.id}
+                                                className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                                title="Reanudar esta tarea"
+                                            >
+                                                {loadingEntryId === entry.id ? (
+                                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                                ) : (
+                                                    <Play className="w-5 h-5 fill-current ml-0.5" />
+                                                )}
+                                            </button>
+                                            <div className="flex flex-col">
+                                                <span className="font-semibold text-sm">
+                                                    {entry.projects?.name || "Sin Proyecto"}
+                                                </span>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                                                        {entry.projects?.color && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: entry.projects.color }} />}
+                                                        {entry.tasks?.name || "Sin tarea"}
                                                     </span>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                                                            {entry.projects?.color && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: entry.projects.color }} />}
-                                                            {entry.tasks?.name || "Sin tarea"}
-                                                        </span>
-                                                        {isActive && (
-                                                            <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-primary text-primary-foreground animate-in fade-in zoom-in">
-                                                                ACTIVO
-                                                            </span>
-                                                        )}
-                                                        {!isActive && (
-                                                            <>
-                                                                <span className="text-[10px] text-muted-foreground/50">•</span>
-                                                                <span className="text-[10px] text-muted-foreground">
-                                                                    {format(new Date(entry.clock_in), "d 'de' MMMM", { locale: es })}
-                                                                </span>
-                                                            </>
-                                                        )}
-                                                    </div>
+                                                    <span className="text-[10px] text-muted-foreground/50">•</span>
+                                                    <span className="text-[10px] text-muted-foreground">
+                                                        {format(new Date(entry.clock_in), "d 'de' MMMM", { locale: es })}
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <div className={`font-mono font-bold text-sm ${isActive ? 'text-primary' : 'text-primary'}`}>{entry.total_hours?.toFixed(2)}h</div>
-                                                <div className="text-[10px] text-muted-foreground">{isActive ? 'Cronometrando...' : 'Finalizado'}</div>
-                                            </div>
                                         </div>
-                                    )
-                                })
+                                        <div className="text-right">
+                                            <div className="font-mono font-bold text-sm text-primary">{entry.total_hours?.toFixed(2)}h</div>
+                                            <div className="text-[10px] text-muted-foreground">Finalizado</div>
+                                        </div>
+                                    </div>
+                                ))
                             ) : (
                                 <div className="flex flex-col items-center justify-center py-8 text-center space-y-2 opacity-50">
                                     <AlertCircle className="w-8 h-8 text-muted-foreground" />
