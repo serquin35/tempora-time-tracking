@@ -15,8 +15,7 @@ Convertir el Dashboard en el centro de comando principal.
   - [x] Tooltip personalizado con detalles del día.
   - [x] Línea de referencia (Meta diaria).
 - [ ] **Lista de Actividad Reciente:**
-  - Mostrar últimos 5 time entries con posibilidad de editarlos rápido.
-  - "Continuar" botón para reanudar un proyecto reciente con un clic.
+  - *(Movido a Fase 5 para pulido UX)*
 
 ## 📊 2. Sistema de Reportes Profesional
 Mejorar la página `/reports` para que sea una herramienta de análisis potente.
@@ -31,19 +30,19 @@ Mejorar la página `/reports` para que sea una herramienta de análisis potente.
 - [x] **Tabla de Detalles:**
   - Tabla paginada con todos los registros.
   - Edición inline de registros desde la tabla de reportes.
-- [ ] **Exportación Robusta:**
+- [x] **Exportación Robusta:**
   - PDF con logo de la empresa y resumen ejecutivo.
   - CSV limpio para importar en Excel/Contabilidad.
 
 ## 📁 3. Detalles de Proyecto (`/projects/[id]`)
 Nueva página para gestión profunda de proyectos individuales.
 
-- [ ] **Header de Proyecto:**
+- [x] **Header de Proyecto:**
   - Barra de progreso de presupuesto (Horas estimadas vs Reales).
   - Estado del proyecto (Activo, Pausado, Completado).
-- [ ] **Desglose de Tareas:**
+- [x] **Desglose de Tareas:**
   - Lista de tareas dentro del proyecto y tiempo dedicado a cada una.
-- [ ] **Equipo del Proyecto:**
+- [x] **Equipo del Proyecto:**
   - Quién ha trabajado en este proyecto y cuánto tiempo.
 
 ## 🧪 Testing

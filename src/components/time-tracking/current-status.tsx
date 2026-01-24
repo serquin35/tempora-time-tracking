@@ -1,10 +1,11 @@
 import { useState } from "react"
 import { format } from "date-fns"
+import { useNavigate } from "react-router-dom"
 import { useTimeTracking } from "@/hooks/use-time-tracking"
 import { useProjects } from "@/hooks/use-projects"
 import { useTasks } from "@/hooks/use-tasks"
 import { Button } from "@/components/ui/button"
-import { Play, Pause, StopCircle, Clock } from "lucide-react"
+import { Play, Pause, StopCircle, Clock, Expand } from "lucide-react"
 import {
     Select,
     SelectContent,
@@ -13,9 +14,26 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
+import confetti from "canvas-confetti"
+
 export function CurrentStatus() {
+    const navigate = useNavigate()
     const { activeEntry, elapsedTime, clockIn, clockOut, togglePause, isLoading } = useTimeTracking()
     const { projects } = useProjects()
+
+    const handleFinish = async () => {
+        // Celebración si la sesión duró más de 30 minutos (sesión productiva)
+        if (elapsedTime > 1800) {
+            confetti({
+                particleCount: 150,
+                spread: 60,
+                origin: { x: 1, y: 0.8 }, // Dispara desde la derecha (cerca del botón)
+                colors: ['#a3e635', '#22c55e', '#ffffff'] // Colores de la marca (lime/green)
+            });
+        }
+        await clockOut()
+    }
+
     const [selectedProjectId, setSelectedProjectId] = useState<string>("")
     const [selectedTaskId, setSelectedTaskId] = useState<string>("")
 
@@ -102,21 +120,33 @@ export function CurrentStatus() {
     }
 
     const isPaused = activeEntry.status === "paused"
+    // Buscamos el proyecto y tarea activos
     const currentProject = projects.find(p => p.id === activeEntry.project_id)
     const currentTask = tasksForDisplay.find(t => t.id === activeEntry.task_id)
 
     return (
-        <div className="h-full min-h-[16rem] bg-zinc-900 text-white rounded-[1.5rem] p-6 md:p-8 flex flex-col justify-between relative overflow-hidden group transition-all duration-500 hover:shadow-2xl hover:shadow-lime-500/10">
-            {/* Background Decoration */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-lime-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="h-full min-h-[16rem] bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white rounded-[1.5rem] p-6 md:p-8 flex flex-col justify-between relative overflow-hidden group transition-all duration-500 hover:shadow-2xl hover:shadow-lime-500/10 border border-zinc-200 dark:border-zinc-800">
+            {/* Background Decoration - Adapted for Light Mode */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-lime-400/10 dark:bg-lime-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+
+            {/* Focus Mode Button */}
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate("/focus")}
+                className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-900 dark:text-white/50 dark:hover:text-white dark:hover:bg-white/10 rounded-full z-20"
+                title="Modo Focus (Pantalla completa)"
+            >
+                <Expand className="w-5 h-5" />
+            </Button>
 
             <div className="relative z-10 flex justify-between items-start">
                 <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                        <p className="text-zinc-400 font-medium tracking-wide uppercase text-xs">Sesión Actual</p>
+                        <p className="text-zinc-500 dark:text-zinc-400 font-medium tracking-wide uppercase text-xs">Sesión Actual</p>
                         {currentProject && (
                             <div className="flex flex-col gap-1">
-                                <span className="px-2 py-0.5 rounded-full text-[10px] bg-zinc-800 text-zinc-300 border border-zinc-700 flex items-center gap-1.5 w-fit">
+                                <span className="px-2 py-0.5 rounded-full text-[10px] bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 flex items-center gap-1.5 w-fit">
                                     <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: currentProject.color }} />
                                     {currentProject.name}
                                 </span>
@@ -128,7 +158,7 @@ export function CurrentStatus() {
                             </div>
                         )}
                     </div>
-                    <div className="mt-2 text-5xl md:text-6xl font-bold font-mono tracking-tighter tabular-nums">
+                    <div className="mt-2 text-5xl md:text-6xl font-bold font-mono tracking-tighter tabular-nums text-zinc-900 dark:text-white">
                         {formatTime(elapsedTime)}
                     </div>
                     <p className="text-zinc-500 mt-2 text-sm flex items-center gap-1">
@@ -136,7 +166,7 @@ export function CurrentStatus() {
                         Iniciado a las {format(new Date(activeEntry.clock_in), "h:mm a")}
                     </p>
                 </div>
-                <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg backdrop-blur-md ${isPaused ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-lime-400/10 text-lime-400 border border-lime-400/20'}`}>
+                <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg backdrop-blur-md ${isPaused ? 'bg-amber-500/10 text-amber-600 dark:text-amber-500 border border-amber-500/20' : 'bg-lime-500/10 text-lime-600 dark:text-lime-400 border border-lime-500/20'}`}>
                     {isPaused ? "Pausado" : "En Vivo"}
                 </div>
             </div>
@@ -154,7 +184,7 @@ export function CurrentStatus() {
                     variant="destructive"
                     size="lg"
                     className="flex-1 rounded-xl shadow-lg shadow-red-500/20 hover:shadow-red-500/40 transition-all"
-                    onClick={clockOut}
+                    onClick={handleFinish}
                 >
                     <StopCircle className="mr-2 h-4 w-4" /> Detener
                 </Button>

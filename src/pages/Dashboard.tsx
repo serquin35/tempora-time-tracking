@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react"
 import { CurrentStatus } from "@/components/time-tracking/current-status"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Activity, Zap, Heart, BarChart3, Clock, AlertCircle } from "lucide-react"
+import { Activity, Zap, BarChart3, AlertCircle, Play, Flame } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/components/auth-context"
 import { useTimeTracking } from "@/hooks/use-time-tracking"
@@ -23,7 +23,7 @@ import {
 
 export default function Dashboard() {
     const { user } = useAuth()
-    const { activeEntry, elapsedTime } = useTimeTracking()
+    const { activeEntry, elapsedTime, clockIn } = useTimeTracking()
     const [recentEntries, setRecentEntries] = useState<any[]>([])
     const [weeklyHistory, setWeeklyHistory] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -37,7 +37,7 @@ export default function Dashboard() {
         // Fetch both recent entries and history for the chart
         const { data, error } = await supabase
             .from('time_entries')
-            .select('*')
+            .select('*, projects(name, color), tasks(name)')
             .eq('user_id', user.id)
             .order('clock_in', { ascending: false })
             .limit(10)
@@ -88,6 +88,23 @@ export default function Dashboard() {
         return days.map(d => ({ ...d, total: Number(d.total.toFixed(2)) }))
     }, [weeklyHistory, activeEntry, elapsedTime])
 
+    // Calculate Streak (días seguidos trabajando)
+    const currentStreak = useMemo(() => {
+        let streak = 0
+        // Recorremos desde hoy hacia atrás
+        for (let i = chartData.length - 1; i >= 0; i--) {
+            if (chartData[i].total > 0) {
+                streak++
+            } else if (i === chartData.length - 1) {
+                // Si hoy es 0, no rompemos la racha si ayer trabajamos (permitimos empezar el día)
+                continue
+            } else {
+                break
+            }
+        }
+        return streak
+    }, [chartData])
+
     return (
         <div className="grid gap-6 animate-in fade-in duration-700">
             {/* Top Section: Active Timer */}
@@ -123,21 +140,19 @@ export default function Dashboard() {
                     </CardContent>
                 </Card>
 
-
-
                 <Card className="shadow-sm bg-card">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Estado</CardTitle>
-                        <div className="p-2 bg-red-500/10 rounded-lg"><Heart className="h-4 w-4 text-red-500" /></div>
+                        <CardTitle className="text-sm font-medium">Racha</CardTitle>
+                        <div className={`p-2 rounded-lg ${currentStreak > 2 ? 'bg-orange-500/10' : 'bg-muted'}`}>
+                            <Flame className={`h-4 w-4 ${currentStreak > 2 ? 'text-orange-500 fill-orange-500' : 'text-muted-foreground'}`} />
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {(chartData[chartData.length - 1]?.total || 0) > 9 ? 'Exhausto' :
-                                (chartData[chartData.length - 1]?.total || 0) > 6 ? 'En Racha' :
-                                    (chartData[chartData.length - 1]?.total || 0) > 0 ? 'Calentando' : 'Fresco'}
+                            {currentStreak} días
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                            {(chartData[chartData.length - 1]?.total || 0) > 9 ? 'Tómate un descanso' : 'Sigue así'}
+                            {currentStreak > 2 ? '¡Estás on fire! 🔥' : 'Mantén el ritmo'}
                         </p>
                     </CardContent>
                 </Card>
@@ -227,19 +242,33 @@ export default function Dashboard() {
                                 recentEntries.map((entry) => (
                                     <div key={entry.id} className="flex items-center justify-between p-3 bg-background/50 border border-border/20 rounded-xl hover:bg-background/80 transition-all group">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                                                <Clock className="w-5 h-5" />
-                                            </div>
+                                            <button
+                                                onClick={() => clockIn(entry.project_id, entry.task_id)}
+                                                disabled={!!activeEntry}
+                                                className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                                title="Reanudar esta tarea"
+                                            >
+                                                <Play className="w-5 h-5 fill-current ml-0.5" />
+                                            </button>
                                             <div className="flex flex-col">
-                                                <span className="font-semibold text-sm">Sesión finalizada</span>
-                                                <span className="text-[10px] text-muted-foreground">
-                                                    {format(new Date(entry.clock_in), "d 'de' MMMM", { locale: es })}
+                                                <span className="font-semibold text-sm">
+                                                    {entry.projects?.name || "Sin Proyecto"}
                                                 </span>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                                                        {entry.projects?.color && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: entry.projects.color }} />}
+                                                        {entry.tasks?.name || "Sin tarea"}
+                                                    </span>
+                                                    <span className="text-[10px] text-muted-foreground/50">•</span>
+                                                    <span className="text-[10px] text-muted-foreground">
+                                                        {format(new Date(entry.clock_in), "d 'de' MMMM", { locale: es })}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <div className="font-mono font-bold text-sm text-primary">{entry.total_hours}h</div>
-                                            <div className="text-[10px] text-muted-foreground">Completado</div>
+                                            <div className="font-mono font-bold text-sm text-primary">{entry.total_hours?.toFixed(2)}h</div>
+                                            <div className="text-[10px] text-muted-foreground">Finalizado</div>
                                         </div>
                                     </div>
                                 ))
