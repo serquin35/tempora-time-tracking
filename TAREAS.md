@@ -30,6 +30,12 @@ La aplicación Tempora está **funcional y desplegada** en producción.
 - ✅ **Multi-Workspace** (selector en avatar dropdown con switch de organizaciones)
 - ✅ **Fix Timer Sync** (Botón Play en dashboard actualiza estado global inmediatamente)
 
+### Fase 7: Ayuda y Soporte ✅
+- ✅ **Diseño y Estructura** (Layout, HelpDropdown)
+- ✅ **Centro de Ayuda** (Nueva página /help con buscador y categorías)
+- ✅ **Feedback y Soporte** (Modal funcional conectado a Supabase)
+- ✅ **Infraestructura** (Tabla `feedback`, RLS policies)
+
 ### Fase 5: Optimizaciones y PWA ✅
 - ✅ Configuración PWA con vite-plugin-pwa
 - ✅ Lazy Loading en rutas principales

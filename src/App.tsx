@@ -17,6 +17,7 @@ const Projects = lazy(() => import("@/pages/Projects"))
 const Team = lazy(() => import("@/pages/Team"))
 const ProjectDetails = lazy(() => import("@/pages/ProjectDetails"))
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"))
+const Help = lazy(() => import("@/pages/Help"))
 
 function LoadingFallback() {
   return (
@@ -96,6 +97,11 @@ export default function App() {
               <Route path="/team" element={
                 <ProtectedRoute>
                   <Team />
+                </ProtectedRoute>
+              } />
+              <Route path="/help" element={
+                <ProtectedRoute>
+                  <Help />
                 </ProtectedRoute>
               } />
               {/* Public Demo Route */}

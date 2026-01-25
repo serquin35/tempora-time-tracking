@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { useLocation } from "react-router-dom"
 import { AvatarDropdown } from "@/components/layout/AvatarDropdown"
 import { NotificationsDropdown } from "@/components/layout/NotificationsDropdown"
+import { HelpDropdown } from "@/components/layout/HelpDropdown"
 
 export default function Layout({ children }: { children: ReactNode }) {
     const { user } = useAuth()
@@ -53,6 +54,8 @@ export default function Layout({ children }: { children: ReactNode }) {
                             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input placeholder="Buscar..." className="pl-8 rounded-full bg-card/50 border-none focus-visible:ring-1 focus-visible:ring-primary/50" />
                         </div>
+
+                        <HelpDropdown />
 
                         <NotificationsDropdown />
 
