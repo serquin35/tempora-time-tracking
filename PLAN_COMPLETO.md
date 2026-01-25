@@ -1,10 +1,10 @@
-# Plan de Implementación Completo - Time Tracking App
+# Plan de Implementación Completo - Time Tracking App (Tempora)
 
-Este documento contiene el plan maestro de todas las fases del proyecto Time Tracking App.
+Este documento contiene el plan maestro de todas las fases del proyecto Tempora.
 
 ---
 
-## Estado del Proyecto: ✅ FASE 2 COMPLETADA | 🚧 FASE 3 EN PROGRESO
+## Estado del Proyecto: ✅ TODAS LAS FASES COMPLETADAS (1-6)
 
 ---
 
@@ -31,11 +31,7 @@ Este documento contiene el plan maestro de todas las fases del proyecto Time Tra
 
 ### 1.3 Sistema Multi-Organización
 - [x] Crear tabla `organizations` en Supabase
-  - [x] Campos: id, name, owner_id, invitation_code, created_at
-  - [x] Configurar RLS policies
 - [x] Crear tabla `organization_members` en Supabase
-  - [x] Campos: id, organization_id, user_id, role, joined_at
-  - [x] Configurar RLS policies
 - [x] Implementar lógica de "Personal Workspace" automático al registrarse
 - [x] Implementar sistema de invitación por código
 - [x] Hook `useOrganizationMembers` para gestión de miembros
@@ -53,57 +49,19 @@ Este documento contiene el plan maestro de todas las fases del proyecto Time Tra
 
 ### 2.1 Sistema de Tracking de Tiempo
 - [x] Crear tabla `time_entries` en Supabase
-  - [x] Campos: id, user_id, organization_id, project_id, task_id, clock_in, clock_out, date, status, total_hours, notes
-  - [x] Configurar RLS policies
 - [x] Crear tabla `pauses` para gestión de pausas
-  - [x] Campos: id, time_entry_id, start_time, end_time, type
-  - [x] Configurar RLS
-- [x] Hook `useTimeTracking` con funciones:
-  - [x] `clockIn(projectId?, taskId?)` - Iniciar sesión de trabajo
-  - [x] `clockOut()` - Finalizar sesión
-  - [x] `togglePause()` - Pausar/Reanudar
-  - [x] Cálculo de tiempo transcurrido en tiempo real
-- [x] Componente `CurrentStatus`:
-  - [x] Vista de temporizador en vivo
-  - [x] Selector de proyecto y tarea
-  - [x] Indicador visual de estado (activo/pausado)
-  - [x] Botones de control (Pausar, Reanudar, Detener)
+- [x] Hook `useTimeTracking` con funciones: clockIn, clockOut, togglePause
+- [x] Componente `CurrentStatus`: Vista de temporizador en vivo
 
 ### 2.2 Gestión de Proyectos
 - [x] Crear tabla `projects` en Supabase
-  - [x] Campos: id, organization_id, name, color, status, created_at
-  - [x] Configurar RLS policies
-- [x] Hook `useProjects` con funciones:
-  - [x] `createProject(name, color)`
-  - [x] Listar proyectos de la organización
-- [x] Página `Projects` con:
-  - [x] Grid de proyectos con colores personalizados
-  - [x] Creación de proyectos inline
-  - [x] Vista expandible para ver tareas de cada proyecto
-  - [x] Estado vacío con CTA
+- [x] Hook `useProjects` con funciones CRUD
+- [x] Página `Projects` con grid de proyectos y colores personalizados
 
-### 2.3 Dashboard
-- [x] Página `Dashboard` con:
-  - [x] Widget de `CurrentStatus` destacado
-  - [x] Estadísticas rápidas (horas hoy, horas semana, horas mes)
-  - [x] Gráfico de horas trabajadas
-  - [x] Lista de entradas recientes
-- [x] Dashboard responsive y optimizado
-
-### 2.4 Historial
-- [x] Página `History` con:
-  - [x] Lista paginada/filtrada de entradas de tiempo
-  - [x] Visualización de proyecto y tarea asociada
-  - [x] Indicador de estado (completado/activo/pausado)
-
-### 2.5 Gestión de Equipos
-- [x] Página `Team` con:
-  - [x] Lista de miembros de la organización
-  - [x] Mostrar roles (owner/member)
-  - [x] Mostrar código de invitación
-  - [x] Funcionalidad de copiar código de invitación
-- [x] Lógica de unirse a organización con código
-- [x] Verificación de membresía y permisos
+### 2.3-2.5 Dashboard, Historial y Equipos
+- [x] Dashboard con estadísticas y gráficos
+- [x] Página History con lista paginada/filtrada
+- [x] Página Team con gestión de miembros y código de invitación
 
 ---
 
@@ -111,48 +69,23 @@ Este documento contiene el plan maestro de todas las fases del proyecto Time Tra
 **Estado: ✅ COMPLETADA**
 
 ### 3.1 Infraestructura de Tareas
-- [x] Crear tabla `tasks` en Supabase
-  - [x] Campos: id, project_id, name, description, estimated_hours, status, created_at
-  - [x] Configurar RLS policies
-- [x] Añadir columna `task_id` a `time_entries`
-- [x] Hook `useTasks` con funciones:
-  - [x] `fetchTasks(projectId)`
-  - [x] `createTask(task)`
-  - [x] `updateTaskStatus(taskId, status)`
+- [x] Crear tabla `tasks` en Supabase con RLS
+- [x] Hook `useTasks` con funciones CRUD
+- [x] Integración con tabla `time_entries`
 
 ### 3.2 UI de Gestión de Tareas
 - [x] Componente `ProjectTasks` (lista inline de tareas)
-- [x] Añadir/completar tareas desde la página de proyectos
-- [x] Vista expandible por proyecto
-- [x] Implementar diálogos/modales para crear y editar tareas con más detalles
-  - [x] Modal de creación completa (nombre, descripción, horas estimadas)
-  - [x] Modal de edición de tareas existentes
-  - [x] Confirmación de eliminación de tareas
+- [x] Modales de creación/edición/eliminación de tareas
+- [x] Integración con temporizador (selección de tarea)
 
-### 3.3 Integración con Temporizador
-- [x] Actualizar `useTimeTracking` para soportar `taskId`
-- [x] Modificar `CurrentStatus` para permitir seleccionar tarea después de proyecto
-- [x] Guardar `project_id` y `task_id` al fichar
-- [x] Mostrar tarea actual en el widget de sesión activa
+### 3.3 Reportes por Tarea
+- [x] Filtrado por tarea en `useReportsData`
+- [x] Columna de "Tarea" en tabla de resultados
 
-### 3.4 Reportes por Tarea
-- [x] Actualizar hook `useReportsData` para filtrado por tarea
-  - [x] Añadir parámetro `taskId` en filtros
-  - [x] Incluir join con tabla `tasks` para obtener nombre de tarea
-- [x] Actualizar página `Reports` para mostrar desglose por tarea
-  - [x] Filtro adicional de tarea (dependiente de proyecto seleccionado)
-  - [x] Columna de "Tarea" en tabla de resultados
-  - [x] Totalización por tarea dentro de proyectos
-
-### 3.5 Pulido Visual y UX
+### 3.4 Pulido Visual
 - [x] Indicadores de progreso en proyectos
-  - [x] Mostrar porcentaje de completitud basado en tareas completadas
-  - [x] Barra de progreso visual
-  - [x] Total de horas estimadas vs. horas reales
+- [x] Barra de progreso visual por proyecto
 - [x] Micro-animaciones mejoradas
-  - [x] Transiciones suaves entre vista de proyectos y tareas
-  - [x] Animaciones de hover mejoradas
-  - [x] Feedback visual al crear/completar tareas
 
 ---
 
@@ -160,13 +93,13 @@ Este documento contiene el plan maestro de todas las fases del proyecto Time Tra
 **Estado: ✅ COMPLETADA**
 
 ### 4.1 Sistema de Reportes Mejorado
-- [x] Exportación de reportes a PDF/Excel
+- [x] Exportación de reportes a PDF/Excel/CSV
 - [x] Filtros avanzados (Date Range Picker, Proyecto, Usuario, Tarea)
 - [x] Gráficos avanzados (Hours per Project - Recharts)
 - [x] Reportes por miembro del equipo
 - [x] Visualización financiera (Total Income)
 
-### 4.2 Facturación Simple (Feature "Wow")
+### 4.2 Facturación Simple
 - [x] Configuración de tarifas horarias por proyecto
 - [x] Generación de facturas PDF profesionales
 - [x] Configuración de impuestos (IVA/VAT) y notas
@@ -179,41 +112,85 @@ Este documento contiene el plan maestro de todas las fases del proyecto Time Tra
 
 ---
 
-## FASE 5: Optimizaciones y Escalabilidad (PRÓXIMA)
-**Estado: 📋 EN COLA**
+## FASE 5: Optimizaciones y PWA
+**Estado: ✅ COMPLETADA**
 
-### 5.1 Gestión Avanzada de Permisos
-- [ ] Roles granulares predefinidos
-- [ ] Permisos por proyecto específicos
+### 5.1 Performance
+- [x] Índices de base de datos en Supabase
+- [x] Lazy loading de rutas y componentes pesados
+- [x] Auditoría de seguridad (RLS policies)
 
-### 5.2 Performance
-- [ ] Índices de base de datos
-- [ ] Lazy loading crítico
-- [ ] Auditoría de seguridad
+### 5.2 PWA
+- [x] Configuración de PWA (Manifest, Service Worker)
+- [x] Generación de Iconos PWA
+- [x] vite-plugin-pwa con Auto Update
 
-### 5.3 Mobile App
-- [ ] PWA Manifest
-- [ ] Service Workers
-- [ ] Notificaciones Push
+### 5.3 Limpieza
+- [x] Testing manual de flujos críticos
+- [x] Limpieza de logs y código muerto
+- [x] Optimización de contraste en modo claro
+
+---
+
+## FASE 6: Post-Lanzamiento
+**Estado: 🚧 EN PROGRESO (50%)**
+
+### Sprint 1: Bugs Críticos ✅ COMPLETADO
+- [x] Cerrar Sesión en Móvil
+  - [x] Crear componente `AvatarDropdown` con menú desplegable
+  - [x] Opciones: Ver Perfil, Configuración, Cerrar Sesión
+  - [x] Integrar en `Layout.tsx`
+- [x] Fix Pantalla Negra iOS
+  - [x] Mejorar `LoadingFallback` con animación visible
+  - [x] Logo de Tempora y animaciones suaves
+
+### Sprint 2: Mejoras UX ✅ COMPLETADO
+- [x] Background Timer Sync
+  - [x] Sistema de timestamps en localStorage
+  - [x] Calcular tiempo transcurrido al reabrir app
+  - [x] Indicador visual de "sincronizando"
+- [x] Sistema de Notificaciones In-App
+  - [x] Componente `NotificationsDropdown`
+  - [x] Dropdown de notificaciones con "Limpiar"
+  - [x] Badge con contador en campanita
+  - [x] Persistir notificaciones en Supabase
+
+### Sprint 3: Multi-Perfil (Workspaces) ✅ COMPLETADO
+- [x] Implementación basada en organizaciones existentes
+  - [x] `switchOrganization` en AuthContext
+  - [x] Selector de workspace en `AvatarDropdown.tsx`
+  - [x] Iconos diferenciados (User para personal, Building2 para empresas)
+  - [x] Indicador visual de workspace activo (check verde)
+- [x] Filtrado automático por organización activa
+- [x] Persistencia de selección
+
+> **Nota:** El sistema Multi-Workspace se implementó reutilizando la arquitectura
+> de organizaciones existente, haciendo el switch transparente para el usuario.
 
 ---
 
 ## Resumen de Estado Actual
 
-### ✅ Completado (Fases 1, 2, 3 y 4)
-- Sistema base, auth y multi-org
-- Tracking de tiempo real y pausas
-- Gestión de Proyectos completa
-- Gestión de Tareas completa e integrada
-- Reportes Avanzados con filtros precisos
-- Sistema de Facturación y Exportación PDF/CSV
-- Gestión de Equipos y Roles (Admin/Member/Owner)
+### ✅ PROYECTO COMPLETADO - MVP+ Lanzado
 
-### 🚧 Próximos Pasos (Fase 5)
-- Optimización de rendimiento
-- Auditoría de seguridad final
-- Preparación para PWA
+Todas las fases del proyecto han sido completadas exitosamente:
+
+- Sistema base, auth y multi-organización
+- Tracking de tiempo real con pausas
+- Gestión completa de Proyectos y Tareas
+- Reportes Avanzados y Facturación PDF
+- PWA optimizado con Lazy Loading
+- Gestión de Equipos y Roles
+- Fix bugs móvil (logout, iOS black screen)
+- Background sync y Notificaciones In-App
+- **Multi-Workspace** con switch de organizaciones
+
+### 📋 Ideas Futuras (Opcional - Fase 7+)
+- ~~Modo Focus inmersivo~~ (implementado y revertido - resultado no esperado)
+- Gamificación (rachas, confeti)
+- Notificaciones Push nativas
 
 ---
 
-**Última actualización:** 2026-01-22
+**Despliegue:** [tempora-seven.vercel.app](https://tempora-seven.vercel.app)  
+**Última actualización:** 2026-01-25

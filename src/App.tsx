@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react"
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import { AuthProvider, useAuth } from "@/components/auth-context"
+import { TimeTrackingProvider } from "@/hooks/use-time-tracking"
 import { ThemeProvider } from "@/components/theme-provider"
 import Layout from "@/components/layout/Layout"
 import { Loader2 } from "lucide-react"
@@ -45,7 +46,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/login" />
   }
 
-  return <Layout>{children}</Layout>
+  return (
+    <TimeTrackingProvider>
+      <Layout>{children}</Layout>
+    </TimeTrackingProvider>
+  )
 }
 
 export default function App() {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, createContext, useContext, type ReactNode } from "react"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/components/auth-context"
 import { differenceInSeconds } from "date-fns"
@@ -18,7 +18,8 @@ export interface TimeEntry {
     notes?: string
 }
 
-export function useTimeTracking() {
+// Internal hook implementation (not exported directly)
+function useTimeTrackingInternal() {
     const { user, organization } = useAuth()
     const [activeEntry, setActiveEntry] = useState<TimeEntry | null>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -217,5 +218,31 @@ export function useTimeTracking() {
         clockIn,
         clockOut,
         togglePause,
+        refetch: fetchActiveEntry,
     }
+}
+
+// Context type
+type TimeTrackingContextType = ReturnType<typeof useTimeTrackingInternal>
+
+// Create context with null default
+const TimeTrackingContext = createContext<TimeTrackingContextType | null>(null)
+
+// Provider component
+export function TimeTrackingProvider({ children }: { children: ReactNode }) {
+    const value = useTimeTrackingInternal()
+    return (
+        <TimeTrackingContext.Provider value= { value } >
+        { children }
+        </TimeTrackingContext.Provider>
+    )
+}
+
+// Public hook that consumes the context
+export function useTimeTracking(): TimeTrackingContextType {
+    const context = useContext(TimeTrackingContext)
+    if (!context) {
+        throw new Error("useTimeTracking must be used within a TimeTrackingProvider")
+    }
+    return context
 }

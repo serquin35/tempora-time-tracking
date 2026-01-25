@@ -471,9 +471,9 @@ export default function Profile() {
                             <div className="p-6 rounded-2xl bg-muted/30 border border-border space-y-4">
                                 <div className="space-y-1">
                                     <h4 className="font-semibold text-foreground flex items-center gap-2">
-                                        <Briefcase className="w-4 h-4 text-lime-500" /> Crear Nueva Empresa
+                                        <Briefcase className="w-4 h-4 text-lime-500" /> Crear Nueva Organizacion
                                     </h4>
-                                    <p className="text-sm text-muted-foreground">Crea un espacio de trabajo para tu equipo o negocio.</p>
+                                    <p className="text-sm text-muted-foreground">Crea una nueva organizacion para tu equipo o negocio.</p>
                                 </div>
                                 <form onSubmit={handleCreateOrganization} className="flex gap-2">
                                     <Input
