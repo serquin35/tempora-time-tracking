@@ -62,21 +62,21 @@ export default function Help() {
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
             {/* Hero Section */}
-            <div className="relative py-12 md:py-20 px-6 rounded-3xl overflow-hidden bg-zinc-900 border border-zinc-800 text-center">
-                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-lime-900/20 via-zinc-900/0 to-zinc-900/0" />
+            <div className="relative py-12 md:py-20 px-6 rounded-[2.5rem] overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-center shadow-xl shadow-zinc-200/50 dark:shadow-none transition-colors duration-300">
+                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-lime-100/40 dark:from-lime-900/20 via-transparent to-transparent" />
 
                 <div className="relative z-10 max-w-2xl mx-auto space-y-6">
-                    <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
+                    <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white">
                         ¿Cómo podemos ayudarte?
                     </h1>
-                    <p className="text-zinc-400 text-lg">
+                    <p className="text-zinc-500 dark:text-zinc-400 text-lg">
                         Encuentra guías, tutoriales y respuestas a tus preguntas sobre Tempora.
                     </p>
 
                     <div className="relative max-w-lg mx-auto">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
                         <Input
-                            className="pl-12 h-14 bg-white/5 border-white/10 text-white placeholder:text-zinc-500 rounded-2xl text-lg focus:bg-white/10 transition-all font-light"
+                            className="pl-12 h-14 bg-zinc-50 dark:bg-white/5 border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white placeholder:text-zinc-500 rounded-2xl text-lg focus:bg-white dark:focus:bg-white/10 transition-all font-light shadow-inner"
                             placeholder="Buscar artículos, guías o tutoriales..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
