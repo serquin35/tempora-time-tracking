@@ -13,7 +13,8 @@ export interface ChatState {
 }
 
 export interface N8nResponse {
-    text: string
+    text?: string
+    output?: string
     action?: string
     metadata?: any
 }
