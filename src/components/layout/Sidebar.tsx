@@ -18,9 +18,9 @@ export function Sidebar() {
     const { signOut, organization } = useAuth()
 
     return (
-        <aside className="w-64 bg-zinc-900 text-white hidden md:flex flex-col p-4 m-4 rounded-[2rem] shadow-xl">
+        <aside className="w-64 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white hidden md:flex flex-col p-4 m-4 rounded-[2rem] shadow-xl border border-zinc-200 dark:border-zinc-800 transition-colors duration-300">
             <div className="flex items-center space-x-2 px-4 py-6">
-                <div className="h-8 w-8 bg-lime-400 rounded-lg flex items-center justify-center">
+                <div className="h-8 w-8 bg-lime-400 rounded-lg flex items-center justify-center shadow-md shadow-lime-400/20">
                     <Clock className="h-5 w-5 text-black" />
                 </div>
                 <div className="flex flex-col">
@@ -43,11 +43,11 @@ export function Sidebar() {
                             className={cn(
                                 "flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative",
                                 isActive
-                                    ? "text-black bg-white shadow-lg translate-x-2"
-                                    : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                                    ? "bg-zinc-900 text-white dark:bg-white dark:text-black shadow-lg translate-x-1"
+                                    : "text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800"
                             )}
                         >
-                            <item.icon className={cn("h-5 w-5", isActive ? "text-primary" : "text-current")} />
+                            <item.icon className={cn("h-5 w-5", isActive ? "text-lime-400 dark:text-primary" : "text-current")} />
                             <span className="font-medium">{item.label}</span>
                             {isActive && (
                                 <div className="absolute right-3 w-2 h-2 rounded-full bg-lime-400" />
@@ -58,7 +58,7 @@ export function Sidebar() {
             </nav>
 
             {/* Upgrade Card Replacement - "Current Status" */}
-            <div className="mt-auto bg-gradient-to-br from-lime-300 to-lime-500 rounded-[1.5rem] p-6 text-black mb-4 relative overflow-hidden group">
+            <div className="mt-auto bg-gradient-to-br from-lime-300 to-lime-500 rounded-[1.5rem] p-6 text-black mb-4 relative overflow-hidden group shadow-lg shadow-lime-500/10">
                 <div className="relative z-10">
                     <h3 className="font-bold text-lg mb-1">¿Hora de enfocarse?</h3>
                     <p className="text-sm opacity-80 mb-4">Inicia el temporizador y avanza.</p>
@@ -74,7 +74,7 @@ export function Sidebar() {
 
             <button
                 onClick={signOut}
-                className="flex items-center space-x-3 px-4 py-3 text-zinc-400 hover:text-red-400 hover:bg-red-900/10 rounded-xl transition-colors mt-2"
+                className="flex items-center space-x-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors mt-2"
             >
                 <LogOut className="h-5 w-5" />
                 <span>Cerrar Sesión</span>

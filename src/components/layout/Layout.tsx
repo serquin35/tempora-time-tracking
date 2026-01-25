@@ -10,6 +10,7 @@ import { useLocation } from "react-router-dom"
 import { AvatarDropdown } from "@/components/layout/AvatarDropdown"
 import { NotificationsDropdown } from "@/components/layout/NotificationsDropdown"
 import { HelpDropdown } from "@/components/layout/HelpDropdown"
+import { SupportWidget } from "@/components/layout/SupportWidget"
 
 export default function Layout({ children }: { children: ReactNode }) {
     const { user } = useAuth()
@@ -82,6 +83,8 @@ export default function Layout({ children }: { children: ReactNode }) {
                 {/* Mobile Navigation */}
                 <MobileNav />
             </div>
+
+            <SupportWidget />
         </div>
     )
 }
