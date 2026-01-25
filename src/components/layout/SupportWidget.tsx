@@ -13,40 +13,33 @@ export function SupportWidget() {
     const [isOpen, setIsOpen] = useState(false)
     const [isTyping, setIsTyping] = useState(false)
     const [inputValue, setInputValue] = useState("")
-    const [messages, setMessages] = useState<ChatMessage[]>(() => {
-        const saved = sessionStorage.getItem("tempora_chat_history")
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved)
-                return parsed.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) }))
-            } catch (e) {
-                return []
-            }
-        }
-        return []
-    })
-
+    const [messages, setMessages] = useState<ChatMessage[]>([])
     const scrollRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
 
-    // Persist messages
+    // Load real history from Supabase
     useEffect(() => {
-        sessionStorage.setItem("tempora_chat_history", JSON.stringify(messages))
-    }, [messages])
+        const loadHistory = async () => {
+            if (!user || !isOpen) return
 
-    // Initial greeting if no messages
-    useEffect(() => {
-        if (messages.length === 0 && isOpen) {
-            setMessages([
-                {
-                    id: "greeting",
-                    text: "¡Hola! Soy el asistente virtual de Tempora. ¿En qué puedo ayudarte hoy?",
-                    sender: 'bot',
-                    timestamp: new Date()
-                }
-            ])
+            const history = await chatService.getChatHistory(user.id)
+            if (history.length > 0) {
+                setMessages(history)
+            } else {
+                // Initial greeting if no history
+                setMessages([
+                    {
+                        id: "greeting",
+                        text: "¡Hola! Soy el asistente virtual de Tempora. ¿En qué puedo ayudarte hoy?",
+                        sender: 'bot',
+                        timestamp: new Date()
+                    }
+                ])
+            }
         }
-    }, [isOpen, messages.length])
+
+        loadHistory()
+    }, [isOpen, user])
 
     // Auto-scroll
     useEffect(() => {
@@ -78,7 +71,8 @@ export function SupportWidget() {
         setIsTyping(true)
 
         // API Call
-        const response = await chatService.sendMessage(userMsg.text, user?.id)
+        if (!user) return
+        const response = await chatService.sendMessage(userMsg.text, user.id)
 
         setMessages(prev => [...prev, response])
         setIsTyping(false)
