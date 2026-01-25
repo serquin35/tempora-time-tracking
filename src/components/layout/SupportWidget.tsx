@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { MessageCircle, X, Send, Bot, Sparkles } from "lucide-react"
+import { MessageCircle, X, Send, Bot, Sparkles, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -100,14 +100,39 @@ export function SupportWidget() {
                                 </div>
                             </div>
                         </div>
-                        <Button
-                            size="icon"
-                            variant="ghost"
-                            className="text-black hover:bg-white/20 rounded-full h-8 w-8"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            <X className="w-4 h-4" />
-                        </Button>
+                        <div className="flex items-center gap-1">
+                            <Button
+                                size="icon"
+                                variant="ghost"
+                                className="text-black hover:bg-white/20 rounded-full h-8 w-8"
+                                onClick={async () => {
+                                    if (user && confirm("¿Estás seguro de que deseas borrar el historial de esta conversación?")) {
+                                        const success = await chatService.clearChatHistory(user.id)
+                                        if (success) {
+                                            setMessages([
+                                                {
+                                                    id: "greeting",
+                                                    text: "Conversación finalizada. ¿En qué más puedo ayudarte?",
+                                                    sender: 'bot',
+                                                    timestamp: new Date()
+                                                }
+                                            ])
+                                        }
+                                    }
+                                }}
+                                title="Limpiar historial"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </Button>
+                            <Button
+                                size="icon"
+                                variant="ghost"
+                                className="text-black hover:bg-white/20 rounded-full h-8 w-8"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                <X className="w-4 h-4" />
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Messages Area */}

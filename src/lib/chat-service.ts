@@ -87,5 +87,20 @@ export const chatService = {
                 isError: true
             }
         }
+    },
+
+    async clearChatHistory(userId: string): Promise<boolean> {
+        try {
+            const { error } = await supabase
+                .from('chat_messages')
+                .delete()
+                .eq('user_id', userId)
+
+            if (error) throw error
+            return true
+        } catch (error) {
+            console.error("Error clearing chat history:", error)
+            return false
+        }
     }
 }
