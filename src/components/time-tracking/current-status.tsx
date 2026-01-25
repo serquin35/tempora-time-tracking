@@ -70,10 +70,10 @@ export function CurrentStatus() {
                     <div className="space-y-3">
                         <Select value={selectedProjectId} onValueChange={(v) => { setSelectedProjectId(v); setSelectedTaskId(""); }}>
                             <SelectTrigger className="w-full bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700">
-                                <SelectValue placeholder="Seleccionar Proyecto (Opcional)" />
+                                <SelectValue placeholder="Seleccionar Proyecto (Requerido)" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="none">Sin Proyecto</SelectItem>
+
                                 {projects.map((project) => (
                                     <SelectItem key={project.id} value={project.id}>
                                         <div className="flex items-center gap-2">
@@ -105,8 +105,9 @@ export function CurrentStatus() {
                     <Button
                         size="lg"
                         className="w-full bg-black text-white dark:bg-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200 rounded-xl"
+                        disabled={!selectedProjectId || selectedProjectId === "none"}
                         onClick={() => clockIn(
-                            selectedProjectId === "none" ? undefined : selectedProjectId,
+                            selectedProjectId,
                             selectedTaskId === "none" ? undefined : selectedTaskId
                         )}
                     >
