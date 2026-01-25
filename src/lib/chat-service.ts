@@ -2,7 +2,7 @@ import type { ChatMessage, N8nResponse } from "@/types/chat"
 
 // Fallback URL for development if env var is missing
 // In production, this should be set in Vercel/Netlify
-const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || "https://su-n8n-instance.com/webhook/chat"
+const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || "https://n8n.cheosdesign.info/webhook/tempora"
 
 export const chatService = {
     async sendMessage(text: string, userId?: string): Promise<ChatMessage> {
