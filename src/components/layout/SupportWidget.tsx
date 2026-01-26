@@ -79,10 +79,16 @@ export function SupportWidget() {
     }
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4 font-sans">
+        <div className="fixed bottom-24 right-4 md:bottom-6 md:right-6 z-[60] flex flex-col items-end gap-3 md:gap-4 font-sans">
             {/* Chat Window */}
             {isOpen && (
-                <div className="w-[380px] h-[550px] bg-background/80 backdrop-blur-xl border border-white/20 shadow-2xl rounded-3xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300 dark:bg-zinc-900/90 dark:border-zinc-800">
+                <div className={cn(
+                    "fixed bottom-40 right-4 sm:relative sm:bottom-0 sm:right-0", // Position fixed on mobile, relative on desktop
+                    "w-[calc(100vw-2rem)] sm:w-[380px] h-[60vh] sm:h-[550px] max-h-[calc(100vh-12rem)]",
+                    "bg-background/80 backdrop-blur-xl border border-white/20 shadow-2xl rounded-3xl flex flex-col overflow-hidden",
+                    "animate-in slide-in-from-bottom-10 fade-in duration-300 dark:bg-zinc-900/90 dark:border-zinc-800",
+                    "transition-all z-[61]"
+                )}>
                     {/* Header */}
                     <div className="p-4 bg-lime-400 dark:bg-lime-500 flex items-center justify-between shrink-0">
                         <div className="flex items-center gap-3">
