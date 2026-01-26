@@ -142,6 +142,7 @@ export const exportToPDF = async (data: ReportEntry[], title = "Reporte de Horas
 export interface InvoiceData {
     invoiceNumber: string
     clientName: string
+    clientCIF?: string
     clientAddress: string
     organizationName: string
     notes?: string
@@ -156,7 +157,7 @@ export const exportInvoiceToPDF = async (invoiceData: InvoiceData) => {
     const { default: autoTable } = await import("jspdf-autotable")
 
     const doc = new jsPDF()
-    const { invoiceNumber, clientName, clientAddress, organizationName, notes, data, taxRate = 21, taxName = "IVA" } = invoiceData
+    const { invoiceNumber, clientName, clientCIF, clientAddress, organizationName, notes, data, taxRate = 21, taxName = "IVA" } = invoiceData
 
     // Colores corporativos (definidos como tuplas)
     const primaryColor: [number, number, number] = [16, 185, 129] // Emerald-500
@@ -194,11 +195,19 @@ export const exportInvoiceToPDF = async (invoiceData: InvoiceData) => {
     doc.setFontSize(10)
     doc.text(clientName, 14, 59)
 
+    let currentClientY = 64
+    if (clientCIF) {
+        doc.setFontSize(9)
+        doc.setTextColor(darkGray[0], darkGray[1], darkGray[2])
+        doc.text(`CIF/NIF: ${clientCIF}`, 14, currentClientY)
+        currentClientY += 6
+    }
+
     if (clientAddress) {
         doc.setFontSize(9)
         doc.setTextColor(lightGray[0], lightGray[1], lightGray[2])
         const addressLines = doc.splitTextToSize(clientAddress, 80)
-        doc.text(addressLines, 14, 65)
+        doc.text(addressLines, 14, currentClientY)
     }
 
     // Calcular totales y agrupar por proyecto

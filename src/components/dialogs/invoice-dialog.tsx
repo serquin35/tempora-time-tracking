@@ -20,6 +20,7 @@ interface InvoiceDialogProps {
 export function InvoiceDialog({ open, onOpenChange, data, organizationName }: InvoiceDialogProps) {
     const [invoiceNumber, setInvoiceNumber] = useState(`INV-${format(new Date(), "yyyyMMdd")}-001`)
     const [clientName, setClientName] = useState("")
+    const [clientCIF, setClientCIF] = useState("")
     const [clientAddress, setClientAddress] = useState("")
     const [notes, setNotes] = useState("")
     const [taxRate, setTaxRate] = useState(21)
@@ -55,6 +56,7 @@ export function InvoiceDialog({ open, onOpenChange, data, organizationName }: In
         exportInvoiceToPDF({
             invoiceNumber,
             clientName,
+            clientCIF,
             clientAddress,
             organizationName,
             notes,
@@ -104,6 +106,15 @@ export function InvoiceDialog({ open, onOpenChange, data, organizationName }: In
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
+                            <Label htmlFor="client-cif">CIF / NIF</Label>
+                            <Input
+                                id="client-cif"
+                                value={clientCIF}
+                                onChange={(e) => setClientCIF(e.target.value)}
+                                placeholder="B12345678"
+                            />
+                        </div>
+                        <div className="space-y-2">
                             <Label htmlFor="tax-name">Impuesto (Nombre)</Label>
                             <Input
                                 id="tax-name"
@@ -112,6 +123,9 @@ export function InvoiceDialog({ open, onOpenChange, data, organizationName }: In
                                 placeholder="IVA, VAT, Tax..."
                             />
                         </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="tax-rate">Impuesto (%)</Label>
                             <Input
@@ -123,17 +137,17 @@ export function InvoiceDialog({ open, onOpenChange, data, organizationName }: In
                                 placeholder="21"
                             />
                         </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="client-address">Dirección del Cliente</Label>
-                        <Textarea
-                            id="client-address"
-                            value={clientAddress}
-                            onChange={(e) => setClientAddress(e.target.value)}
-                            placeholder="Calle Principal 123, 28001 Madrid"
-                            rows={2}
-                        />
+                        <div className="space-y-2">
+                            <Label htmlFor="client-address">Dirección del Cliente</Label>
+                            <Textarea
+                                id="client-address"
+                                value={clientAddress}
+                                onChange={(e) => setClientAddress(e.target.value)}
+                                placeholder="Calle Principal 123, 28001 Madrid"
+                                rows={1}
+                                className="min-h-[40px] resize-none"
+                            />
+                        </div>
                     </div>
 
                     {/* Preview de la factura */}
@@ -153,6 +167,7 @@ export function InvoiceDialog({ open, onOpenChange, data, organizationName }: In
                             <div className="pt-4 border-t border-zinc-800">
                                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Cliente</p>
                                 <p className="font-semibold">{clientName}</p>
+                                {clientCIF && <p className="text-sm font-mono text-zinc-400">CIF: {clientCIF}</p>}
                                 {clientAddress && <p className="text-sm text-muted-foreground">{clientAddress}</p>}
                             </div>
                         )}
