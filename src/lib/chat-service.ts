@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase"
-import type { ChatMessage, N8nResponse } from "@/types/chat"
+import type { ChatMessage } from "@/types/chat"
 
 // Fallback URL for development if env var is missing
 const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || "https://n8n.cheosdesign.info/webhook/tempora"
