@@ -53,8 +53,11 @@ export const chatService = {
 
             if (!response.ok) throw new Error("Error connecting to support")
 
-            const data: N8nResponse = await response.json()
-            const botResponse = data.output || data.text || "Lo siento, no he recibido una respuesta válida."
+            const data = await response.json()
+
+            // Handle both object and array response from n8n
+            const responseData = Array.isArray(data) ? data[0] : data
+            const botResponse = responseData?.output || responseData?.text || "Lo siento, no he recibido una respuesta válida."
 
             // 3. Save bot response to Supabase
             const { data: savedBotMsg, error: saveError } = await supabase
