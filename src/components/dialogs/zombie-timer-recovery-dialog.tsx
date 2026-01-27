@@ -124,7 +124,6 @@ export function ZombieTimerRecoveryDialog({ open, entry, onKeep, onFix }: Zombie
 }
 
 function formatDateToLocalISOString(date: Date) {
-    const tzOffset = -date.getTimezoneOffset();
     const pad = (n: number) => `${Math.floor(Math.abs(n))}`.padStart(2, '0');
     return date.getFullYear() +
         '-' + pad(date.getMonth() + 1) +
