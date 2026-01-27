@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback, useRef, createContext, useContext, type ReactNode } from "react"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/components/auth-context"
+import { differenceInSeconds, differenceInHours } from "date-fns"
+import { ZombieTimerRecoveryDialog } from "@/components/dialogs/zombie-timer-recovery-dialog"
+import { useAuth } from "@/components/auth-context"
 import { differenceInSeconds } from "date-fns"
 
 export type TimeEntryStatus = "active" | "paused" | "completed"
@@ -232,8 +235,8 @@ const TimeTrackingContext = createContext<TimeTrackingContextType | null>(null)
 export function TimeTrackingProvider({ children }: { children: ReactNode }) {
     const value = useTimeTrackingInternal()
     return (
-        <TimeTrackingContext.Provider value= { value } >
-        { children }
+        <TimeTrackingContext.Provider value={value} >
+            {children}
         </TimeTrackingContext.Provider>
     )
 }
