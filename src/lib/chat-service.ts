@@ -5,12 +5,13 @@ import type { ChatMessage } from "@/types/chat"
 const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || "https://n8n.cheosdesign.info/webhook/tempora"
 
 export const chatService = {
-    async getChatHistory(userId: string): Promise<ChatMessage[]> {
+    async getChatHistory(userId: string, conversationId: string): Promise<ChatMessage[]> {
         try {
             const { data, error } = await supabase
                 .from('chat_messages')
                 .select('*')
                 .eq('user_id', userId)
+                .eq('conversation_id', conversationId)
                 .order('created_at', { ascending: true })
 
             if (error) throw error
@@ -27,13 +28,14 @@ export const chatService = {
         }
     },
 
-    async sendMessage(text: string, userId: string): Promise<ChatMessage> {
+    async sendMessage(text: string, userId: string, conversationId: string): Promise<ChatMessage> {
         try {
             // 1. Save user message to Supabase
             await supabase.from('chat_messages').insert({
                 user_id: userId,
                 sender: 'user',
-                text: text.trim()
+                text: text.trim(),
+                conversation_id: conversationId
             })
 
             // 2. Send to n8n
@@ -43,6 +45,7 @@ export const chatService = {
                 body: JSON.stringify({
                     message: text,
                     userId: userId,
+                    conversationId: conversationId,
                     timestamp: new Date().toISOString(),
                     context: {
                         page: window.location.pathname,
@@ -65,7 +68,8 @@ export const chatService = {
                 .insert({
                     user_id: userId,
                     sender: 'bot',
-                    text: botResponse
+                    text: botResponse,
+                    conversation_id: conversationId
                 })
                 .select()
                 .single()
