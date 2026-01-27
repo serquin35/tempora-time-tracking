@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { MessageCircle, X, Send, Bot, Sparkles, Trash2 } from "lucide-react"
+import { MessageCircle, X, Send, Bot, Sparkles, Trash2, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -17,12 +17,37 @@ export function SupportWidget() {
     const scrollRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
 
+    // Conversation ID Management
+    const [conversationId, setConversationId] = useState<string>(() => {
+        return localStorage.getItem("tempora_active_conversation_id") || crypto.randomUUID()
+    })
+
+    // Persist conversation ID
+    useEffect(() => {
+        if (conversationId) {
+            localStorage.setItem("tempora_active_conversation_id", conversationId)
+        }
+    }, [conversationId])
+
+    const startNewConversation = () => {
+        const newId = crypto.randomUUID()
+        setConversationId(newId)
+        setMessages([
+            {
+                id: "greeting",
+                text: "He iniciado una nueva conversación. ¿En qué puedo ayudarte ahora?",
+                sender: 'bot',
+                timestamp: new Date()
+            }
+        ])
+    }
+
     // Load real history from Supabase
     useEffect(() => {
         const loadHistory = async () => {
             if (!user || !isOpen) return
 
-            const history = await chatService.getChatHistory(user.id)
+            const history = await chatService.getChatHistory(user.id, conversationId)
             if (history.length > 0) {
                 setMessages(history)
             } else {
@@ -39,7 +64,7 @@ export function SupportWidget() {
         }
 
         loadHistory()
-    }, [isOpen, user])
+    }, [isOpen, user, conversationId])
 
     // Auto-scroll
     useEffect(() => {
@@ -72,7 +97,7 @@ export function SupportWidget() {
 
         // API Call
         if (!user) return
-        const response = await chatService.sendMessage(userMsg.text, user.id)
+        const response = await chatService.sendMessage(userMsg.text, user.id, conversationId)
 
         setMessages(prev => [...prev, response])
         setIsTyping(false)
@@ -112,23 +137,13 @@ export function SupportWidget() {
                                 variant="ghost"
                                 className="text-black hover:bg-white/20 rounded-full h-8 w-8"
                                 onClick={async () => {
-                                    if (user && confirm("¿Estás seguro de que deseas borrar el historial de esta conversación?")) {
-                                        const success = await chatService.clearChatHistory(user.id)
-                                        if (success) {
-                                            setMessages([
-                                                {
-                                                    id: "greeting",
-                                                    text: "Conversación finalizada. ¿En qué más puedo ayudarte?",
-                                                    sender: 'bot',
-                                                    timestamp: new Date()
-                                                }
-                                            ])
-                                        }
+                                    if (confirm("¿Empezar una nueva conversación? Se ocultará el historial actual.")) {
+                                        startNewConversation()
                                     }
                                 }}
-                                title="Limpiar historial"
+                                title="Nueva Conversación"
                             >
-                                <Trash2 className="w-4 h-4" />
+                                <Plus className="w-4 h-4" />
                             </Button>
                             <Button
                                 size="icon"
@@ -191,7 +206,8 @@ export function SupportWidget() {
                                     inputValue.trim()
                                         ? "bg-lime-400 text-black hover:bg-lime-500"
                                         : "bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-600"
-                                )}
+                                )
+                                }
                             >
                                 <Send className="w-4 h-4" />
                             </Button>
