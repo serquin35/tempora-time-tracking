@@ -3,8 +3,6 @@ import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/components/auth-context"
 import { differenceInSeconds, differenceInHours } from "date-fns"
 import { ZombieTimerRecoveryDialog } from "@/components/dialogs/zombie-timer-recovery-dialog"
-import { useAuth } from "@/components/auth-context"
-import { differenceInSeconds } from "date-fns"
 
 export type TimeEntryStatus = "active" | "paused" | "completed"
 
@@ -27,7 +25,20 @@ function useTimeTrackingInternal() {
     const [activeEntry, setActiveEntry] = useState<TimeEntry | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [elapsedTime, setElapsedTime] = useState(0)
+    const [zombieEntry, setZombieEntry] = useState<TimeEntry | null>(null)
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+    const checkForZombie = (entry: TimeEntry) => {
+        const startTime = new Date(entry.clock_in)
+        const hoursRunning = differenceInHours(new Date(), startTime)
+
+        // ZOMBIE THRESHOLD: 12 Hours
+        if (hoursRunning >= 12 && entry.status !== 'paused') {
+            setZombieEntry(entry)
+            return true
+        }
+        return false
+    }
 
     const fetchActiveEntry = useCallback(async () => {
         if (!user) return
@@ -35,7 +46,7 @@ function useTimeTrackingInternal() {
         setIsLoading(true)
         const { data, error } = await supabase
             .from("time_entries")
-            .select("*")
+            .select("*, project:projects(name)")
             .eq("user_id", user.id)
             .in("status", ["active", "paused"])
             .single()
@@ -45,8 +56,13 @@ function useTimeTrackingInternal() {
         }
 
         if (data) {
-            setActiveEntry(data)
-            calculateElapsedTime(data)
+            // Check for zombie status BEFORE setting it as active
+            const isZombie = checkForZombie(data as unknown as TimeEntry)
+
+            if (!isZombie) {
+                setActiveEntry(data)
+                calculateElapsedTime(data)
+            }
         } else {
             setActiveEntry(null)
             setElapsedTime(0)
@@ -214,10 +230,52 @@ function useTimeTrackingInternal() {
         if (data) setActiveEntry(data)
     }
 
+    // Resolvers for Zombie Dialog
+    const keepZombieTime = () => {
+        if (zombieEntry) {
+            setActiveEntry(zombieEntry)
+            calculateElapsedTime(zombieEntry)
+            setZombieEntry(null) // Dismiss dialog
+        }
+    }
+
+    const fixZombieTime = async (newEndTime: string) => {
+        if (!zombieEntry) return
+
+        const start = new Date(zombieEntry.clock_in)
+        const end = new Date(newEndTime)
+        const totalHours = differenceInSeconds(end, start) / 3600
+
+        if (totalHours < 0) {
+            alert("La hora de fin no puede ser anterior al inicio.")
+            return
+        }
+
+        const { error } = await supabase
+            .from("time_entries")
+            .update({
+                clock_out: newEndTime,
+                status: "completed",
+                total_hours: Number(totalHours.toFixed(2)),
+            })
+            .eq("id", zombieEntry.id)
+
+        if (!error) {
+            setZombieEntry(null)
+            // We don't setActiveEntry here because it's now completed/closed
+            fetchActiveEntry() // Refetch to ensure clean state
+        } else {
+            console.error("Error fixing zombie time:", error)
+        }
+    }
+
     return {
         activeEntry,
         isLoading,
         elapsedTime,
+        zombieEntry,
+        keepZombieTime,
+        fixZombieTime,
         clockIn,
         clockOut,
         togglePause,
@@ -234,9 +292,16 @@ const TimeTrackingContext = createContext<TimeTrackingContextType | null>(null)
 // Provider component
 export function TimeTrackingProvider({ children }: { children: ReactNode }) {
     const value = useTimeTrackingInternal()
+
     return (
-        <TimeTrackingContext.Provider value={value} >
+        <TimeTrackingContext.Provider value={value}>
             {children}
+            <ZombieTimerRecoveryDialog
+                open={!!value.zombieEntry}
+                entry={value.zombieEntry}
+                onKeep={value.keepZombieTime}
+                onFix={value.fixZombieTime}
+            />
         </TimeTrackingContext.Provider>
     )
 }

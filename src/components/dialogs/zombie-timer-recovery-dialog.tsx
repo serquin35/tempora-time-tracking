@@ -30,7 +30,7 @@ export function ZombieTimerRecoveryDialog({ open, entry, onKeep, onFix }: Zombie
 
     // Suggest a reasonable end time (e.g., start time + 8 hours or current time if less)
     const suggestedFixDate = new Date(startTime.getTime() + 4 * 60 * 60 * 1000) // Default to +4h as a safe guess
-    
+
     // Format for datetime-local input: YYYY-MM-DDTHH:mm
     const formatForInput = (date: Date) => {
         return formatDateToLocalISOString(date).slice(0, 16)
@@ -79,16 +79,16 @@ export function ZombieTimerRecoveryDialog({ open, entry, onKeep, onFix }: Zombie
 
                 {mode === "initial" ? (
                     <div className="space-y-3 pt-2">
-                        <Button 
-                            className="w-full bg-amber-600 hover:bg-amber-700 text-white" 
+                        <Button
+                            className="w-full bg-amber-600 hover:bg-amber-700 text-white"
                             onClick={handleFixClick}
                         >
                             <Clock className="mr-2 h-4 w-4" />
                             No, olvidé pararlo (Corregir Hora)
                         </Button>
-                        <Button 
-                            variant="outline" 
-                            className="w-full" 
+                        <Button
+                            variant="outline"
+                            className="w-full"
                             onClick={onKeep}
                         >
                             Sí, trabajé todo este tiempo
@@ -96,12 +96,12 @@ export function ZombieTimerRecoveryDialog({ open, entry, onKeep, onFix }: Zombie
                     </div>
                 ) : (
                     <div className="space-y-4 pt-2">
-                         <div className="grid gap-2">
+                        <div className="grid gap-2">
                             <Label htmlFor="endtime">¿A qué hora terminaste realmente?</Label>
-                            <Input 
-                                id="endtime" 
-                                type="datetime-local" 
-                                value={fixTime} 
+                            <Input
+                                id="endtime"
+                                type="datetime-local"
+                                value={fixTime}
                                 onChange={(e) => setFixTime(e.target.value)}
                             />
                             <p className="text-xs text-muted-foreground">
@@ -125,7 +125,6 @@ export function ZombieTimerRecoveryDialog({ open, entry, onKeep, onFix }: Zombie
 
 function formatDateToLocalISOString(date: Date) {
     const tzOffset = -date.getTimezoneOffset();
-    const diff = tzOffset >= 0 ? '+' : '-';
     const pad = (n: number) => `${Math.floor(Math.abs(n))}`.padStart(2, '0');
     return date.getFullYear() +
         '-' + pad(date.getMonth() + 1) +

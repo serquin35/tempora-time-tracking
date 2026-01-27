@@ -164,8 +164,16 @@ Este documento contiene el plan maestro de todas las fases del proyecto Tempora.
 - [x] Filtrado automático por organización activa
 - [x] Persistencia de selección
 
-> **Nota:** El sistema Multi-Workspace se implementó reutilizando la arquitectura
 > de organizaciones existente, haciendo el switch transparente para el usuario.
+
+### Sprint 4: Documentation & Reliability ✅ COMPLETADO
+- [x] **Refactorización de Documentación**
+  - [x] Migración de `KNOWLEDGE_BASE.md` monolítico a estructura modular (`docs/knowledge-base/01-07`)
+  - [x] Expansión de contenido: Filosofía, RBAC detallado, Guías de n8n para soporte RAG
+- [x] **Zombie Timer Recovery**
+  - [x] Detección automática de sesiones >12h en `useTimeTracking`
+  - [x] Modal de seguridad `ZombieTimerRecoveryDialog`
+  - [x] Opciones de "Conservar" o "Corregir Hora" para integridad de datos
 
 ---
 
