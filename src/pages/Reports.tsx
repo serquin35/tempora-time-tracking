@@ -15,6 +15,16 @@ import { ReportCharts } from "@/components/reports/report-charts"
 import { DatePickerWithRange } from "@/components/ui/date-range-picker"
 import { InvoiceDialog } from "@/components/dialogs/invoice-dialog"
 import { ReportsTable } from "@/components/reports/reports-table"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 export default function Reports() {
     const { userRole, organization } = useAuth()
@@ -30,6 +40,22 @@ export default function Reports() {
         taskId: "all"
     })
     const [isInvoiceDialogOpen, setIsInvoiceDialogOpen] = useState(false)
+    const [downloadConfirmOpen, setDownloadConfirmOpen] = useState(false)
+    const [downloadType, setDownloadType] = useState<'csv' | 'pdf' | null>(null)
+
+    const handleDownloadClick = (type: 'csv' | 'pdf') => {
+        setDownloadType(type)
+        setDownloadConfirmOpen(true)
+    }
+
+    const handleConfirmDownload = () => {
+        if (downloadType === 'csv') {
+            exportToCSV(data, `reporte-${organization?.name || "tiempo"}`, isAdminOrOwner)
+        } else if (downloadType === 'pdf') {
+            exportToPDF(data, `Reporte de ${organization?.name || "Tiempos"}`, `reporte-${organization?.name || "tiempo"}`, isAdminOrOwner)
+        }
+        setDownloadConfirmOpen(false)
+    }
 
     // Hook para tareas - solo se cargan si hay un proyecto seleccionado
     const { tasks } = useTasks(filters.projectId !== "all" ? filters.projectId : undefined)
@@ -72,7 +98,7 @@ export default function Reports() {
                         variant="outline"
                         size="sm"
                         className="bg-card border-border hover:bg-accent hover:text-accent-foreground"
-                        onClick={() => exportToCSV(data, `reporte-${organization?.name || "tiempo"}`, isAdminOrOwner)}
+                        onClick={() => handleDownloadClick('csv')}
                         disabled={isLoading || data.length === 0}
                     >
                         <FileSpreadsheet className="w-4 h-4 mr-2 text-emerald-500" />
@@ -82,7 +108,7 @@ export default function Reports() {
                         variant="outline"
                         size="sm"
                         className="bg-card border-border hover:bg-accent hover:text-accent-foreground"
-                        onClick={() => exportToPDF(data, `Reporte de ${organization?.name || "Tiempos"}`, `reporte-${organization?.name || "tiempo"}`, isAdminOrOwner)}
+                        onClick={() => handleDownloadClick('pdf')}
                         disabled={isLoading || data.length === 0}
                     >
                         <FileText className="w-4 h-4 mr-2 text-red-500" />
@@ -225,6 +251,29 @@ export default function Reports() {
                 data={data}
                 organizationName={organization?.name || "Mi Organización"}
             />
+
+            <AlertDialog open={downloadConfirmOpen} onOpenChange={setDownloadConfirmOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>¿Descargar Reporte?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Estás a punto de descargar el reporte en formato <span className="font-semibold text-foreground">{downloadType === 'csv' ? 'Excel / CSV' : 'PDF'}</span>.
+                            <br />
+                            Se exportarán {data.length} registros según los filtros actuales.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleConfirmDownload}
+                            className={downloadType === 'csv' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-red-600 hover:bg-red-700 text-white'}
+                        >
+                            {downloadType === 'csv' ? <FileSpreadsheet className="w-4 h-4 mr-2" /> : <FileText className="w-4 h-4 mr-2" />}
+                            Descargar Ahora
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div >
     )
 }
