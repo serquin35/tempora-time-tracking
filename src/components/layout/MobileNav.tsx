@@ -1,9 +1,10 @@
 import { Link, useLocation } from "react-router-dom"
-import { LayoutDashboard, History, FileText, User } from "lucide-react"
+import { LayoutDashboard, History, FileText, User, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navItems = [
     { icon: LayoutDashboard, label: "Tablero", href: "/" },
+    { icon: Users, label: "Equipo", href: "/team" },
     { icon: History, label: "Historial", href: "/history" },
     { icon: FileText, label: "Reportes", href: "/reports" },
     { icon: User, label: "Perfil", href: "/profile" },
