@@ -193,9 +193,12 @@ Todas las fases del proyecto han sido completadas exitosamente:
 - Background sync y Notificaciones In-App
 - **Multi-Workspace** con switch de organizaciones
 
+### 6.1 Sprint Mantenimiento (Enero 2026) ✅ COMPLETADO
+- [x] **Navegación Móvil Optimizada**: Acceso directo a Proyectos.
+- [x] **Compatibilidad Extendida**: Soporte para Android WebViews antiguos (ES2015).
+- [x] **Mejoras UX Reportes**: Prevención de descargas accidentales.
+
 ### 📋 Ideas Futuras (Opcional - Fase 7+)
-- ~~Modo Focus inmersivo~~ (implementado y revertido - resultado no esperado)
-- Gamificación (rachas, confeti)
 - Notificaciones Push nativas
 
 ---

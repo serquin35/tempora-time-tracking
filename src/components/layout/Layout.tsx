@@ -2,8 +2,7 @@ import type { ReactNode } from "react"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { MobileNav } from "@/components/layout/MobileNav"
 import { useAuth } from "@/components/auth-context"
-import { Search, Clock } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { Clock } from "lucide-react"
 import { useTheme } from "@/components/theme-provider"
 import { Button } from "@/components/ui/button"
 import { useLocation } from "react-router-dom"
@@ -12,10 +11,14 @@ import { NotificationsDropdown } from "@/components/layout/NotificationsDropdown
 import { HelpDropdown } from "@/components/layout/HelpDropdown"
 import { SupportWidget } from "@/components/layout/SupportWidget"
 
+import { CommandMenu } from "@/components/search/CommandMenu"
+import { useState } from "react"
+
 export default function Layout({ children }: { children: ReactNode }) {
     const { user } = useAuth()
     const { theme, setTheme } = useTheme()
     const location = useLocation()
+    const [open, setOpen] = useState(false)
 
     // Determine title based on path
     const getPageTitle = () => {
@@ -52,9 +55,19 @@ export default function Layout({ children }: { children: ReactNode }) {
 
                     <div className="flex items-center space-x-2 md:space-x-4">
                         <div className="relative w-48 lg:w-64 hidden md:block">
-                            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Buscar..." className="pl-8 rounded-full bg-card/50 border-none focus-visible:ring-1 focus-visible:ring-primary/50" />
+                            <Button
+                                variant="outline"
+                                className="relative h-9 w-full justify-start rounded-[0.5rem] bg-card/50 text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64 border-none shadow-none ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                onClick={() => setOpen(true)}
+                            >
+                                <span className="hidden lg:inline-flex">Buscar proyectos...</span>
+                                <span className="inline-flex lg:hidden">Buscar...</span>
+                                <kbd className="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+                                    <span className="text-xs">⌘</span>K
+                                </kbd>
+                            </Button>
                         </div>
+                        <CommandMenu open={open} setOpen={setOpen} />
 
                         <HelpDropdown />
 

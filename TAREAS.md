@@ -1,9 +1,15 @@
 # Lista de Tareas - Time Tracking App (Tempora)
 
-**Fecha:** 2026-01-25  
-**Fase Actual:** ✅ Fase 6 - Post-Lanzamiento COMPLETADA
+**Fecha:** 2026-01-28  
+**Fase Actual:** 🛠️ Mantenimiento y Optimización
 
 ---
+
+## 🛠️ Sprint Mantenimiento (Enero 2026)
+- ✅ **Fix Navegación Móvil**: Reemplazar 'Perfil' por 'Proyectos' en barra inferior (UX).
+- ✅ **Soporte Legacy**: Build target `es2015` para dispositivos antiguos (ej. Oukitel).
+- ✅ **UX Reportes**: Diálogo de confirmación antes de descargar CSV/PDF.
+
 
 ## 🎉 PROYECTO COMPLETADO - MVP+ Lanzado
 
