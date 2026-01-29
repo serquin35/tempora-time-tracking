@@ -133,9 +133,9 @@ export function SupportWidget() {
                         </div>
                         <div className="flex items-center gap-1">
                             <Button
-                                size="icon"
+                                size="sm"
                                 variant="ghost"
-                                className="text-black hover:bg-white/20 rounded-full h-8 w-8"
+                                className="text-black hover:bg-white/20 rounded-lg px-2 h-8 flex items-center gap-1.5 transition-colors"
                                 onClick={async () => {
                                     if (confirm("¿Empezar una nueva conversación? Se ocultará el historial actual.")) {
                                         startNewConversation()
@@ -144,6 +144,7 @@ export function SupportWidget() {
                                 title="Nueva Conversación"
                             >
                                 <Plus className="w-4 h-4" />
+                                <span className="text-[10px] font-bold uppercase tracking-tight">Reiniciar</span>
                             </Button>
                             <Button
                                 size="icon"
