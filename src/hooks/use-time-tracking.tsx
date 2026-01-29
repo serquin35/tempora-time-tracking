@@ -49,7 +49,7 @@ function useTimeTrackingInternal() {
             .select("*, project:projects(name)")
             .eq("user_id", user.id)
             .in("status", ["active", "paused"])
-            .single()
+            .maybeSingle()
 
         if (error && error.code !== "PGRST116") {
             console.error("Error fetching active entry:", error)
@@ -170,7 +170,7 @@ function useTimeTrackingInternal() {
                 status: "active",
             })
             .select()
-            .single()
+            .maybeSingle()
 
         if (error) {
             console.error("Error clocking in:", error)
@@ -224,7 +224,7 @@ function useTimeTrackingInternal() {
             .update({ status: newStatus })
             .eq("id", activeEntry.id)
             .select()
-            .single()
+            .maybeSingle()
 
         if (error) console.error("Error toggling pause:", error)
         if (data) setActiveEntry(data)

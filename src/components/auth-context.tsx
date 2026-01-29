@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 .select('role')
                 .eq('organization_id', orgId)
                 .eq('user_id', user.id)
-                .single()
+                .maybeSingle()
 
             if (data) {
                 setUserRole(data.role as any)
