@@ -9,7 +9,19 @@ import {
     User,
     Plus,
     Play,
-    BookOpen
+    BookOpen,
+    Pause,
+    Coffee,
+    Wind,
+    Target,
+    Brain,
+    Zap,
+    Flame,
+    Timer,
+    CheckCircle,
+    Moon,
+    FileText as ReportIcon,
+    HelpCircle
 } from "lucide-react"
 import { getAllArticles } from "@/lib/help-content"
 import {
@@ -60,94 +72,94 @@ export function CommandMenu({ open, setOpen }: CommandMenuProps) {
             <CommandList>
                 <CommandEmpty>No se encontraron resultados.</CommandEmpty>
 
-                <CommandGroup heading="Acciones Rápidas">
-                    <CommandItem onSelect={() => runCommand(() => navigate("/?action=timer"))} value="iniciar timer cronometro empezar">
-                        <Play className="mr-2 h-4 w-4 text-lime-500" />
-                        <span>Iniciar Timer</span>
+                <CommandGroup heading="⏸️ Pausa / Calma">
+                    <CommandItem onSelect={() => runCommand(() => navigate("/?action=pause"))} value="pausar timer stop">
+                        <Pause className="mr-2 h-4 w-4 text-emerald-500" />
+                        <span>Pausar Timer</span>
                     </CommandItem>
-                    <CommandItem onSelect={() => runCommand(() => navigate("/projects?action=new"))} value="crear nuevo proyecto">
-                        <Plus className="mr-2 h-4 w-4 text-primary" />
-                        <span>Crear Nuevo Proyecto</span>
+                    <CommandItem onSelect={() => runCommand(() => navigate("/?action=rest"))} value="tomar respiro descanso break">
+                        <Wind className="mr-2 h-4 w-4 text-emerald-400" />
+                        <span>Tomar un Respiro</span>
                     </CommandItem>
-                </CommandGroup>
-
-                <CommandSeparator />
-
-                <CommandGroup heading="Navegación">
-                    <CommandItem onSelect={() => runCommand(() => navigate("/"))} value="dashboard inicio home">
-                        <LayoutDashboard className="mr-2 h-4 w-4" />
-                        <span>Dashboard</span>
-                    </CommandItem>
-                    <CommandItem onSelect={() => runCommand(() => navigate("/projects"))} value="proyectos projects">
-                        <Briefcase className="mr-2 h-4 w-4" />
-                        <span>Proyectos</span>
-                    </CommandItem>
-                    <CommandItem onSelect={() => runCommand(() => navigate("/history"))} value="historial history log">
-                        <History className="mr-2 h-4 w-4" />
-                        <span>Historial</span>
-                    </CommandItem>
-                    <CommandItem onSelect={() => runCommand(() => navigate("/reports"))} value="reportes informes exportar">
-                        <FileText className="mr-2 h-4 w-4" />
-                        <span>Reportes</span>
-                    </CommandItem>
-                    <CommandItem onSelect={() => runCommand(() => navigate("/team"))} value="equipo team miembros usuarios">
-                        <Users className="mr-2 h-4 w-4" />
-                        <span>Equipo</span>
+                    <CommandItem onSelect={() => runCommand(() => navigate("/?action=coffee"))} value="pausa cafe coffee descanso">
+                        <Coffee className="mr-2 h-4 w-4 text-amber-600" />
+                        <span>Pausa Café</span>
                     </CommandItem>
                 </CommandGroup>
 
                 <CommandSeparator />
 
-                <CommandGroup heading="Proyectos Recientes">
-                    {projects.slice(0, 5).map((project) => (
-                        <CommandItem
-                            key={project.id}
-                            onSelect={() => runCommand(() => navigate(`/projects/${project.id}`))}
-                            value={`proyecto project ${project.name}`}
-                        >
-                            <div
-                                className="mr-2 h-4 w-4 rounded-full border border-zinc-200 dark:border-zinc-800"
-                                style={{ backgroundColor: project.color }}
-                            />
-                            <span>{project.name}</span>
-                            <CommandShortcut>Proy</CommandShortcut>
-                        </CommandItem>
-                    ))}
-                    {projects.length === 0 && (
-                        <CommandItem disabled>
-                            <span className="text-muted-foreground">Sin proyectos activos</span>
-                        </CommandItem>
-                    )}
+                <CommandGroup heading="🎯 Concentración / Foco">
+                    <CommandItem onSelect={() => runCommand(() => navigate("/?action=deepwork"))} value="iniciar deep work foco intenso">
+                        <Brain className="mr-2 h-4 w-4 text-violet-500" />
+                        <span>Iniciar Deep Work</span>
+                    </CommandItem>
+                    <CommandItem onSelect={() => runCommand(() => navigate("/?action=zone"))} value="entrar zona flow">
+                        <Target className="mr-2 h-4 w-4 text-red-500" />
+                        <span>Entrar en la Zona</span>
+                    </CommandItem>
+                    <CommandItem onSelect={() => runCommand(() => navigate("/?action=focus-block"))} value="bloque enfoque 1h hora">
+                        <Zap className="mr-2 h-4 w-4 text-yellow-500" />
+                        <span>Bloque de Enfoque (1h)</span>
+                    </CommandItem>
                 </CommandGroup>
 
                 <CommandSeparator />
 
-                <CommandGroup heading="Centro de Ayuda">
-                    <CommandItem onSelect={() => runCommand(() => navigate('/help'))} value="ayuda help soporte">
-                        <Lightbulb className="mr-2 h-4 w-4 text-yellow-500" />
-                        <span>Ir al Centro de Ayuda</span>
+                <CommandGroup heading="🔥 Sprint / Intensidad">
+                    <CommandItem onSelect={() => runCommand(() => navigate("/?action=sprint-25"))} value="sprint final 25m pomodoro">
+                        <Flame className="mr-2 h-4 w-4 text-orange-500" />
+                        <span>Sprint Final (25m)</span>
                     </CommandItem>
-                    {allArticles.map((article) => (
+                    <CommandItem onSelect={() => runCommand(() => navigate("/?action=deadline"))} value="modo deadline urgencia">
+                        <Timer className="mr-2 h-4 w-4 text-red-600" />
+                        <span>Modo Deadline</span>
+                    </CommandItem>
+                </CommandGroup>
+
+                <CommandSeparator />
+
+                <CommandGroup heading="🏁 Finalizar / Cerrar">
+                    <CommandItem onSelect={() => runCommand(() => navigate("/?action=complete"))} value="completar tarea finish done">
+                        <CheckCircle className="mr-2 h-4 w-4 text-lime-500" />
+                        <span>Completar Tarea</span>
+                    </CommandItem>
+                    <CommandItem onSelect={() => runCommand(() => navigate("/?action=finish-day"))} value="cerrar dia day end log out">
+                        <Moon className="mr-2 h-4 w-4 text-indigo-400" />
+                        <span>Cerrar el Día</span>
+                    </CommandItem>
+                </CommandGroup>
+
+                <CommandSeparator />
+
+                <CommandGroup heading="🚀 Navegación / Utilitarios">
+                    <CommandItem onSelect={() => runCommand(() => navigate("/projects?action=new"))} value="nuevo proyecto new project">
+                        <Plus className="mr-2 h-4 w-4" />
+                        <span>Nuevo Proyecto</span>
+                    </CommandItem>
+                    <CommandItem onSelect={() => runCommand(() => navigate("/reports"))} value="ver reportes informes">
+                        <ReportIcon className="mr-2 h-4 w-4" />
+                        <span>Ver Reportes</span>
+                    </CommandItem>
+                    <CommandItem onSelect={() => runCommand(() => navigate("/help"))} value="centro ayuda help center">
+                        <HelpCircle className="mr-2 h-4 w-4 text-yellow-500" />
+                        <span>Centro de Ayuda</span>
+                    </CommandItem>
+                </CommandGroup>
+
+                <CommandSeparator />
+
+                <CommandGroup heading="Ayuda Rápida">
+                    {allArticles.slice(0, 3).map((article) => (
                         <CommandItem
                             key={article.id}
                             onSelect={() => runCommand(() => navigate(`/help/${article.category}/${article.id}`))}
-                            value={`${article.title} ${article.description} ayuda help`}
+                            value={`${article.title} ayuda`}
                         >
                             <BookOpen className="mr-2 h-4 w-4 text-muted-foreground" />
-                            <div className="flex flex-col">
-                                <span>{article.title}</span>
-                                <span className="text-[10px] text-muted-foreground line-clamp-1">{article.description}</span>
-                            </div>
+                            <span>{article.title}</span>
                         </CommandItem>
                     ))}
-                </CommandGroup>
-
-                <CommandGroup heading="Configuración">
-                    <CommandItem onSelect={() => runCommand(() => navigate("/profile"))} value="perfil profile cuenta ajustes settings">
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Perfil y Ajustes</span>
-                        <CommandShortcut>⌘P</CommandShortcut>
-                    </CommandItem>
                 </CommandGroup>
             </CommandList>
         </CommandDialog>
