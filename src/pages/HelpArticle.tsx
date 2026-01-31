@@ -1,4 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
+import { supabase } from '@/lib/supabase'
 import { getArticle, categoryMetadata, helpArticles } from '@/lib/help-content'
 import { ArticleViewer } from '@/components/help/ArticleViewer'
 import { TableOfContents } from '@/components/help/TableOfContents'
@@ -21,10 +22,29 @@ export default function HelpArticle() {
     const articlesInCategory = helpArticles[category] || []
     const isSingleArticleCategory = articlesInCategory.length === 1
 
-    const handleFeedback = (helpful: boolean) => {
-        // En el futuro, esto puede enviar a analytics o Supabase
-        console.log(`Feedback for ${articleId}:`, helpful ? 'helpful' : 'not helpful')
-        setFeedbackGiven(true)
+    const handleFeedback = async (helpful: boolean) => {
+        try {
+            // Intentar enviar feedback a Supabase
+            const { data: { user } } = await supabase.auth.getUser()
+
+            const { error } = await supabase
+                .from('help_feedback')
+                .insert({
+                    article_id: `${category}/${articleId}`,
+                    user_id: user?.id || null, // Anónimo si no hay user
+                    is_helpful: helpful
+                })
+
+            if (error) {
+                // Si la tabla no existe, fallará silenciosamente en consola
+                console.warn('Supabase feedback error (table might be missing):', error)
+            }
+        } catch (err) {
+            console.error('Error feedback:', err)
+        } finally {
+            // Siempre mostramos el estado de éxito al usuario para mejor UX
+            setFeedbackGiven(true)
+        }
     }
 
     if (!article || !meta) {
