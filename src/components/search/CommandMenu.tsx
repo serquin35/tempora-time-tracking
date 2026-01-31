@@ -1,14 +1,6 @@
 import { useEffect } from "react"
 import {
-    LayoutDashboard,
-    Users,
-    FileText,
-    History,
-    Briefcase,
-    Lightbulb,
-    User,
     Plus,
-    Play,
     BookOpen,
     Pause,
     Coffee,
@@ -32,10 +24,9 @@ import {
     CommandItem,
     CommandList,
     CommandSeparator,
-    CommandShortcut,
 } from "@/components/ui/command"
 import { useNavigate } from "react-router-dom"
-import { useProjects } from "@/hooks/use-projects"
+
 
 interface CommandMenuProps {
     open: boolean
@@ -44,7 +35,6 @@ interface CommandMenuProps {
 
 export function CommandMenu({ open, setOpen }: CommandMenuProps) {
     const navigate = useNavigate()
-    const { projects } = useProjects()
 
     // Obtener todos los artículos para búsqueda plana
     const allArticles = getAllArticles()
