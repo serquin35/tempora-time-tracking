@@ -11,6 +11,9 @@ El corazón de Tempora es el cronómetro. Hemos diseñado este módulo para cubr
     *   **Smart Autocomplete:** Al escribir, el sistema sugiere tareas recientes, nombres de proyectos o clientes basándose en tu historial frecuente.
 *   **Modo Continuo (Server-Side Tracking):** El timer no vive en tu navegador, vive en el servidor. Puedes cerrar la pestaña, apagar el ordenador o cambiar de dispositivo, y el timer seguirá corriendo. Nunca perderás tiempo por un reinicio accidental.
 
+> **Nota Importante:** Si inicias un timer en un dispositivo y lo detienes en otro, la duración se calculará con precisión de servidor, ignorando cualquier diferencia horaria local entre tus dispositivos.
+
+
 ### 1.2 Edición Manual y Modo "Bulk"
 No siempre es posible trackear en tiempo real. Tempora ofrece herramientas potentes para la entrada diferida:
 *   **Time Grid:** Una vista visual (tipo calendario) donde puedes hacer clic y arrastrar para crear bloques de tiempo. Ideal para "rellenar huecos" al final del día.

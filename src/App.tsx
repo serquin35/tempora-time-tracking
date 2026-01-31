@@ -18,6 +18,8 @@ const Team = lazy(() => import("@/pages/Team"))
 const ProjectDetails = lazy(() => import("@/pages/ProjectDetails"))
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"))
 const Help = lazy(() => import("@/pages/Help"))
+const HelpCategory = lazy(() => import("@/pages/HelpCategory"))
+const HelpArticle = lazy(() => import("@/pages/HelpArticle"))
 
 function LoadingFallback() {
   return (
@@ -102,6 +104,16 @@ export default function App() {
               <Route path="/help" element={
                 <ProtectedRoute>
                   <Help />
+                </ProtectedRoute>
+              } />
+              <Route path="/help/:category" element={
+                <ProtectedRoute>
+                  <HelpCategory />
+                </ProtectedRoute>
+              } />
+              <Route path="/help/:category/:articleId" element={
+                <ProtectedRoute>
+                  <HelpArticle />
                 </ProtectedRoute>
               } />
               {/* Public Demo Route */}

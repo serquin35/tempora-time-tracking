@@ -1,16 +1,20 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Search, Rocket, Wrench, Clock, BarChart3, FolderKanban, Settings, ArrowRight, MessageSquare } from "lucide-react"
 import { FeedbackDialog } from "@/components/dialogs/feedback-dialog"
+import { helpArticles } from "@/lib/help-content"
 
 export default function Help() {
     const [searchQuery, setSearchQuery] = useState("")
     const [showFeedback, setShowFeedback] = useState(false)
+    const navigate = useNavigate()
 
     const categories = [
         {
+            slug: "primeros-pasos",
             icon: Rocket,
             title: "Primeros Pasos",
             description: "Configura tu cuenta, crea tu organización y empieza a trackear.",
@@ -18,6 +22,7 @@ export default function Help() {
             bg: "bg-blue-500/10"
         },
         {
+            slug: "tracking-tiempo",
             icon: Clock,
             title: "Tracking de Tiempo",
             description: "Aprende a usar el cronómetro, entradas manuales y atajos.",
@@ -25,6 +30,7 @@ export default function Help() {
             bg: "bg-lime-500/10"
         },
         {
+            slug: "gestion-proyectos",
             icon: FolderKanban,
             title: "Gestión de Proyectos",
             description: "Organiza tu trabajo con proyectos, tareas y clientes.",
@@ -32,6 +38,7 @@ export default function Help() {
             bg: "bg-purple-500/10"
         },
         {
+            slug: "reportes-analisis",
             icon: BarChart3,
             title: "Reportes y Análisis",
             description: "Interpreta tus datos, exporta informes y visualiza tu productividad.",
@@ -39,6 +46,7 @@ export default function Help() {
             bg: "bg-orange-500/10"
         },
         {
+            slug: "solucion-problemas",
             icon: Wrench,
             title: "Solución de Problemas",
             description: "Respuestas a preguntas frecuentes y errores comunes.",
@@ -46,6 +54,7 @@ export default function Help() {
             bg: "bg-red-500/10"
         },
         {
+            slug: "administracion",
             icon: Settings,
             title: "Administración",
             description: "Gestiona tu equipo, facturación y configuración del espacio.",
@@ -58,6 +67,19 @@ export default function Help() {
         c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         c.description.toLowerCase().includes(searchQuery.toLowerCase())
     )
+
+    // Función para manejar clic en categoría
+    const handleCategoryClick = (categorySlug: string) => {
+        const articles = helpArticles[categorySlug]
+
+        // Si solo hay 1 artículo, ir directo a él
+        if (articles && articles.length === 1) {
+            navigate(`/help/${categorySlug}/${articles[0].id}`)
+        } else {
+            // Si hay múltiples artículos, ir a la página de categoría
+            navigate(`/help/${categorySlug}`)
+        }
+    }
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
@@ -88,7 +110,11 @@ export default function Help() {
             {/* Categories Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredCategories.map((category, index) => (
-                    <Card key={index} className="group hover:border-lime-500/50 transition-all duration-300 cursor-pointer bg-card/50 backdrop-blur-sm">
+                    <Card
+                        key={index}
+                        onClick={() => handleCategoryClick(category.slug)}
+                        className="group hover:border-lime-500/50 transition-all duration-300 cursor-pointer bg-card/50 backdrop-blur-sm"
+                    >
                         <CardHeader>
                             <div className={`w-12 h-12 rounded-2xl ${category.bg} ${category.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
                                 <category.icon className="w-6 h-6" />

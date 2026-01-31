@@ -108,7 +108,7 @@ export function CommandMenu({ open, setOpen }: CommandMenuProps) {
                         <span>Perfil</span>
                         <CommandShortcut>⌘P</CommandShortcut>
                     </CommandItem>
-                    <CommandItem onSelect={() => runCommand(() => window.open('https://tempora-help.vercel.app', '_blank'))}>
+                    <CommandItem onSelect={() => runCommand(() => navigate('/help'))}>
                         <Lightbulb className="mr-2 h-4 w-4" />
                         <span>Ayuda</span>
                     </CommandItem>
