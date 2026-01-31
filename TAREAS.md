@@ -9,6 +9,7 @@
 - ✅ **Rediseño Help Center**: Estilo profesional tipo Clockify (Time estimate, Alerts, Spacing).
 - ✅ **Navegación Inteligente**: Salto directo a artículos únicos y Tabla de Contenidos (TOC) con Scroll Spy.
 - ✅ **Fix Globales**: 404 en búsqueda global y estilos Dark Mode consistentes.
+- ✅ **Feedback Persistente**: Integración con Supabase para registrar votos de utilidad en artículos.
 
 ## 🎉 PROYECTO COMPLETADO - MVP+ Lanzado
 
@@ -44,7 +45,7 @@ La aplicación Tempora está **funcional y desplegada** en producción.
 ### Fase 7: Ayuda y Soporte ✅
 - ✅ **Centro de Ayuda In-App** (`/help` + Búsqueda + Categorías)
 - ✅ **Rediseño Profesional** (Tipografía, Layout y Componentes estilizados)
-- ✅ **Componentes Interactivos** (TOC con Scroll Spy, Article Feedback)
+- ✅ **Componentes Interactivos** (TOC con Scroll Spy, Article Feedback Backend)
 - ✅ **Navegación UX** (Rutas inteligentes, breadcrumbs dinámicos)
 - ✅ **Integración Markdown** (Renderizado seguro, imágenes lazy, code blocks)
 

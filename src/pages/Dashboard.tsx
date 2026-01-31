@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
+import { useSearchParams } from "react-router-dom"
 import { CurrentStatus } from "@/components/time-tracking/current-status"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Activity, Zap, BarChart3, AlertCircle, Play, Flame, Loader2 } from "lucide-react"
@@ -37,6 +38,17 @@ export default function Dashboard() {
             setLoadingEntryId(null)
         }
     }
+
+    // Handle intent from global command menu (just clean up URL for now, user is already here)
+    const [searchParams, setSearchParams] = useSearchParams()
+    useEffect(() => {
+        if (searchParams.get("action") === "timer") {
+            setSearchParams(params => {
+                params.delete("action")
+                return params
+            })
+        }
+    }, [searchParams, setSearchParams])
 
     const fetchDashboardData = async () => {
         if (!user) return

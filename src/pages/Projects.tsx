@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "react-router-dom"
 import { useProjects } from "@/hooks/use-projects"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
@@ -39,8 +40,21 @@ export default function Projects() {
     const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null)
     const [projectToDelete, setProjectToDelete] = useState<typeof projects[0] | null>(null)
     const [projectToManageMembers, setProjectToManageMembers] = useState<{ id: string; name: string } | null>(null)
+    const [searchParams, setSearchParams] = useSearchParams()
 
     const isAdminOrOwner = userRole === 'owner' || userRole === 'admin'
+
+    // Auto-open create form via query param
+    useEffect(() => {
+        if (searchParams.get("action") === "new" && isAdminOrOwner) {
+            setIsCreating(true)
+            // Clean URL
+            setSearchParams(params => {
+                params.delete("action")
+                return params
+            })
+        }
+    }, [searchParams, setSearchParams, isAdminOrOwner])
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault()
