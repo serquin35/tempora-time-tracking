@@ -48,7 +48,7 @@ export function CommandMenu({ open, setOpen }: CommandMenuProps) {
 
     return (
         <CommandDialog open={open} onOpenChange={setOpen}>
-            <CommandInput placeholder="Buscar ayuda, acciones..." />
+            <CommandInput placeholder="Buscar..." />
             <CommandList>
                 <CommandEmpty>No se encontraron resultados.</CommandEmpty>
 
