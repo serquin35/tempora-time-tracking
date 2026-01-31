@@ -123,7 +123,7 @@ export function ArticleViewer({ content, title }: ArticleViewerProps) {
                     rehypePlugins={[rehypeRaw]}
                     components={{
                         // Blockquotes como cajas de nota amarillas (estilo Clockify)
-                        blockquote: ({ node, children, ...props }) => (
+                        blockquote: ({ children }) => (
                             <div className="flex gap-4 bg-yellow-50 dark:bg-yellow-950/20 
                 border-l-4 border-yellow-500 px-6 py-4 my-8 rounded-r-lg
                 not-italic shadow-sm">

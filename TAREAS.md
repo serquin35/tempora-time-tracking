@@ -1,15 +1,14 @@
 # Lista de Tareas - Time Tracking App (Tempora)
 
-**Fecha:** 2026-01-28  
+**Fecha:** 2026-01-31
 **Fase Actual:** 🛠️ Mantenimiento y Optimización
 
 ---
 
-## 🛠️ Sprint Mantenimiento (Enero 2026)
-- ✅ **Fix Navegación Móvil**: Reemplazar 'Perfil' por 'Proyectos' en barra inferior (UX).
-- ✅ **Soporte Legacy**: Build target `es2015` para dispositivos antiguos (ej. Oukitel).
-- ✅ **UX Reportes**: Diálogo de confirmación antes de descargar CSV/PDF.
-
+## 🛠️ Sprint Help Center (Enero 2026)
+- ✅ **Rediseño Help Center**: Estilo profesional tipo Clockify (Time estimate, Alerts, Spacing).
+- ✅ **Navegación Inteligente**: Salto directo a artículos únicos y Tabla de Contenidos (TOC) con Scroll Spy.
+- ✅ **Fix Globales**: 404 en búsqueda global y estilos Dark Mode consistentes.
 
 ## 🎉 PROYECTO COMPLETADO - MVP+ Lanzado
 
@@ -43,6 +42,11 @@ La aplicación Tempora está **funcional y desplegada** en producción.
 - ✅ **Gestión de Sesiones** (Botón para limpiar historial y finalizar chat)
 
 ### Fase 7: Ayuda y Soporte ✅
+- ✅ **Centro de Ayuda In-App** (`/help` + Búsqueda + Categorías)
+- ✅ **Rediseño Profesional** (Tipografía, Layout y Componentes estilizados)
+- ✅ **Componentes Interactivos** (TOC con Scroll Spy, Article Feedback)
+- ✅ **Navegación UX** (Rutas inteligentes, breadcrumbs dinámicos)
+- ✅ **Integración Markdown** (Renderizado seguro, imágenes lazy, code blocks)
 
 ### Fase 5: Optimizaciones y PWA ✅
 - ✅ Configuración PWA con vite-plugin-pwa
