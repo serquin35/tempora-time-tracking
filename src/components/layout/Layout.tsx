@@ -60,7 +60,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                                 className="relative h-9 w-full justify-start rounded-[0.5rem] bg-card/50 text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64 border-none shadow-none ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                 onClick={() => setOpen(true)}
                             >
-                                <span className="hidden lg:inline-flex">Buscar proyectos...</span>
+                                <span className="hidden lg:inline-flex">Buscar...</span>
                                 <span className="inline-flex lg:hidden">Buscar...</span>
                                 <kbd className="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
                                     <span className="text-xs">⌘</span>K

@@ -5,11 +5,12 @@
 
 ---
 
-## 🛠️ Sprint Help Center (Enero 2026)
+## 🛠️ Sprint Help Center & UX (Enero 2026)
 - ✅ **Rediseño Help Center**: Estilo profesional tipo Clockify (Time estimate, Alerts, Spacing).
 - ✅ **Navegación Inteligente**: Salto directo a artículos únicos y Tabla de Contenidos (TOC) con Scroll Spy.
 - ✅ **Fix Globales**: 404 en búsqueda global y estilos Dark Mode consistentes.
 - ✅ **Feedback Persistente**: Integración con Supabase para registrar votos de utilidad en artículos.
+- ✅ **Command Menu Simplificado**: Búsqueda real de artículos de ayuda + acciones únicas (sin redundancia con sidebar).
 
 ## 🎉 PROYECTO COMPLETADO - MVP+ Lanzado
 
@@ -89,5 +90,5 @@ La aplicación Tempora está **funcional y desplegada** en producción.
 
 ---
 
-**Última actualización:** 2026-01-25
+**Última actualización:** 2026-01-31
 **Responsable:** @Serquin
