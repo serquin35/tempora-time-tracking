@@ -25,27 +25,33 @@ export function ArticleViewer({ content, title }: ArticleViewerProps) {
     return (
         <Card className="bg-card border-border shadow-sm overflow-hidden">
             <article className="prose prose-zinc dark:prose-invert max-w-none px-6 md:px-12 lg:px-16 py-12
-        prose-headings:scroll-mt-20 prose-headings:font-semibold
+        prose-headings:scroll-mt-20
         
         /* H1: Título principal muy grande */
-        prose-h1:text-4xl md:prose-h1:text-5xl prose-h1:font-bold 
+        prose-h1:text-4xl md:prose-h1:text-5xl lg:prose-h1:text-6xl prose-h1:font-bold 
         prose-h1:mb-4 prose-h1:mt-0 prose-h1:leading-tight
         prose-h1:tracking-tight prose-h1:text-foreground
         
-        /* H2: Secciones principales con mucho espacio arriba */
-        prose-h2:text-2xl md:prose-h2:text-3xl prose-h2:font-semibold 
-        prose-h2:mt-16 prose-h2:mb-6 
-        prose-h2:text-foreground prose-h2:scroll-mt-20
+        /* H2: Secciones principales - EXTREMADAMENTE PROMINENTES */
+        prose-h2:text-3xl md:prose-h2:text-4xl lg:prose-h2:text-5xl
+        prose-h2:font-extrabold 
+        prose-h2:mt-24 prose-h2:mb-10 prose-h2:pb-6
+        prose-h2:text-foreground
+        prose-h2:border-b-2 prose-h2:border-primary/20
+        prose-h2:scroll-mt-20 prose-h2:leading-tight
         
-        /* H3: Subsecciones */
-        prose-h3:text-xl md:prose-h3:text-2xl prose-h3:font-semibold 
-        prose-h3:mt-12 prose-h3:mb-4
-        prose-h3:text-foreground
+        /* H3: Subsecciones - Muy prominentes */
+        prose-h3:text-2xl md:prose-h3:text-3xl lg:prose-h3:text-4xl
+        prose-h3:font-bold 
+        prose-h3:mt-20 prose-h3:mb-8
+        prose-h3:text-foreground/95
+        prose-h3:leading-tight
         
-        /* H4 */
-        prose-h4:text-lg md:prose-h4:text-xl prose-h4:font-semibold 
-        prose-h4:mt-10 prose-h4:mb-3
-        prose-h4:text-foreground
+        /* H4: Definido */
+        prose-h4:text-xl md:prose-h4:text-2xl lg:prose-h4:text-3xl
+        prose-h4:font-semibold 
+        prose-h4:mt-16 prose-h4:mb-5
+        prose-h4:text-foreground/90
         
         /* Párrafos: Mucho más espacio */
         prose-p:text-base prose-p:leading-relaxed prose-p:my-6
@@ -185,7 +191,11 @@ export function ArticleViewer({ content, title }: ArticleViewerProps) {
                             const text = extractText(children)
                             const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-')
                             return (
-                                <h2 id={id} className="group relative pr-8 inline-block" {...props}>
+                                <h2 id={id} className="group relative pr-8 inline-block 
+                                    text-2xl md:text-3xl font-semibold 
+                                    mt-16 mb-6 pb-3 leading-tight
+                                    text-foreground border-b border-border/40
+                                    scroll-mt-20" {...props}>
                                     {children}
                                     <a
                                         href={`#${id}`}
@@ -201,7 +211,11 @@ export function ArticleViewer({ content, title }: ArticleViewerProps) {
                             const text = extractText(children)
                             const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-')
                             return (
-                                <h3 id={id} className="group relative pr-8 inline-block" {...props}>
+                                <h3 id={id} className="group relative pr-8 inline-block
+                                    text-xl md:text-2xl font-semibold
+                                    mt-12 mb-4 leading-tight
+                                    text-foreground/95
+                                    scroll-mt-20" {...props}>
                                     {children}
                                     <a
                                         href={`#${id}`}
