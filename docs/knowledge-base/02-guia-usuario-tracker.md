@@ -13,6 +13,11 @@ El corazón de Tempora es el cronómetro. Hemos diseñado este módulo para cubr
 
 > **Nota Importante:** Si inicias un timer en un dispositivo y lo detienes en otro, la duración se calculará con precisión de servidor, ignorando cualquier diferencia horaria local entre tus dispositivos.
 
+![Timer Activo](/help/screenshots/dashboard-overview-active.jpg)
+*Vista del dashboard con un timer en funcionamiento*
+
+![Timer Activo - Vista Alternativa](/help/screenshots/dashboard-overview-active02.jpg)
+*Diferentes estados del timer durante el tracking*
 
 ### 1.2 Edición Manual y Modo "Bulk"
 No siempre es posible trackear en tiempo real. Tempora ofrece herramientas potentes para la entrada diferida:

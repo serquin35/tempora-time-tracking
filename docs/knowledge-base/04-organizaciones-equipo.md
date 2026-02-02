@@ -17,6 +17,9 @@ El Owner configura los parámetros globales:
 *   **Inicio de Semana:** (Lunes/Domingo) Afecta a los reportes semanales y cálculo de horas extra.
 *   **Formato de Tiempo:** (HH:MM vs Decimal). Ej: 1h 30m vs 1.5h.
 
+![Configuración de Organización](/help/screenshots/organization-settings.jpg)
+*Panel de configuración de la organización*
+
 ## 2. Roles y Permisos (RBAC)
 Tempora implementa un sistema de control de acceso basado en roles (RBAC) granular para proteger la información sensible (tarifas, facturación).
 
@@ -35,6 +38,9 @@ Tempora implementa un sistema de control de acceso basado en roles (RBAC) granul
     *   *Privacidad:* Solo puede ver y editar **sus propios tiempos**.
     *   *Asignación:* Solo puede trackear en proyectos a los que ha sido explícitamente invitado.
     *   *Ceguera Financiera:* No ve tarifas ni presupuestos monetarios, solo horas.
+
+![Gestión de Equipo](/help/screenshots/team-management.jpg)
+*Vista de administración de miembros del equipo*
 
 ## 3. Gestión de Usuarios y Grupos
 ### 3.1 Grupos de Usuarios

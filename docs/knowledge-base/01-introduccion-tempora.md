@@ -11,6 +11,9 @@ A diferencia de las herramientas tradicionales que se centran en la vigilancia (
 *   **Para la Agencia:** Proporciona transparencia total al cliente y visibilidad real de la rentabilidad de cada proyecto, eliminando las conjeturas en los presupuestos.
 *   **Para Equipos Remotos:** Sincroniza el trabajo asíncrono respetando las zonas horarias y la autonomía individual.
 
+![Dashboard Principal de Tempora](/help/screenshots/dashboard-overview.jpg)
+*Vista general del dashboard principal de Tempora*
+
 ## 2. Filosofía "Precision-First"
 En Tempora, cada segundo cuenta. Nuestro diseño se basa en tres pilares filosóficos:
 

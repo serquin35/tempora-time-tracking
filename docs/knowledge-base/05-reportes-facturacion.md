@@ -10,6 +10,9 @@ Tu torre de control. Una vista de águila diseñada para responder "¿Cómo va e
 *   **Distribución de Esfuerzo (Donut Chart):** Desglose porcentual por Cliente o Proyecto.
 *   **Tendencia (Trendline):** Comparativa visual de horas facturables esta semana vs. la semana pasada.
 
+![Reportes con Gráficos](/help/screenshots/reports-charts.jpg)
+*Dashboard de reportes con visualizaciones y métricas clave*
+
 ## 2. El Motor de Reportes (Report Builder)
 Tempora incluye una herramienta potente para generar informes a medida a partir de los datos brutos.
 
@@ -20,6 +23,9 @@ Puedes "cortar" los datos con precisión quirúrgica:
 *   **Personas:** Usuario específico, Grupo o Equipo.
 *   **Estado:** Facturable / No Facturable / Ya Facturado (Invoiced).
 *   **Tags:** Filtrar por etiquetas transversales (ej. mostrar solo horas etiquetadas con `#Overtime`).
+
+![Reportes con Filtros](/help/screenshots/reports-charts-filters.jpg)
+*Sistema de filtros avanzados para segmentar y analizar datos*
 
 ### 2.2 Agrupación y Ordenación
 Estructura la información como la necesites leer:
@@ -59,3 +65,6 @@ Tempora incluye un sistema de marcado de estado:
 *   Unset: Registrado pero no revisado.
 *   Project Manager Approved: Revisado por el jefe de proyecto.
 *   Invoiced: Ya incluido en una factura. Bloquea la edición del registro para garantizar inmutabilidad contable (previene que se modifique un registro de tiempo después de haber sido cobrado).
+
+![Reportes con Facturación](/help/screenshots/reports-charts-filters-invoice.jpg)
+*Vista completa de reportes con filtros e integración de facturación*

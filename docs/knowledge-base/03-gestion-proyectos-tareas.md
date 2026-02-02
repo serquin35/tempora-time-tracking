@@ -21,6 +21,9 @@ El eje central de la organización. Un proyecto define las reglas de facturació
 2.  **Fixed Fee (Precio Fijo):** El proyecto tiene un precio total acordado (ej. $5,000). El tracking descuenta del presupuesto interno, calculando la rentabilidad real vs. el precio vendido.
 3.  **Non-Billable (Interno):** Para trabajo administrativo, formación o preventa. No genera deuda al cliente pero consume capacidad del equipo.
 
+![Vista de Proyectos](/help/screenshots/projects-grid.jpg)
+*Grid de proyectos mostrando presupuestos, progreso y estados*
+
 ### 1.3 Tareas
 Unidades de trabajo específicas dentro de un proyecto.
 *   **Hitos:** Pueden configurarse como entregables con fecha límite.
