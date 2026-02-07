@@ -15,17 +15,29 @@ export default function UpdatePassword() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        // En un flujo real de Supabase, cuando el usuario pincha el link del correo, 
-        // llega a la app con un fragmento en la URL que contiene el access_token.
-        // Supabase-js detecta esto automáticamente y establece la sesión.
+        // Escuchamos cambios de auth (Supabase procesa el hash de la URL asíncronamente)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                setError(null) // Si hay sesión, quitamos cualquier mensaje de error
+            }
+        })
+
         const checkSession = async () => {
             const { data: { session } } = await supabase.auth.getSession()
             if (!session) {
-                // Si no hay sesión, algo fue mal con el link o expiró
-                setError("No se ha podido validar la sesión de recuperación. Por favor, solicita un nuevo enlace.")
+                // Si no hay sesión inmediata, esperamos 2 segundos antes de mostrar error
+                // dando tiempo a que el hash sea procesado
+                setTimeout(async () => {
+                    const { data: { session: retrySession } } = await supabase.auth.getSession()
+                    if (!retrySession) {
+                        setError("No se ha podido validar la sesión de recuperación. Por favor, solicita un nuevo enlace desde la pantalla de login.")
+                    }
+                }, 2000)
             }
         }
+
         checkSession()
+        return () => subscription.unsubscribe()
     }, [])
 
     const handleUpdate = async (e: React.FormEvent) => {
