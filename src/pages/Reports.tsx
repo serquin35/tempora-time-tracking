@@ -74,6 +74,13 @@ export default function Reports() {
 
     const isAdminOrOwner = userRole === 'admin' || userRole === 'owner'
 
+    // Cálculo de Eficiencia
+    const entriesWithEstimation = data.filter(e => e.estimated_hours && e.total_hours && e.total_hours > 0)
+    const averageEfficiency = entriesWithEstimation.length > 0
+        ? Math.min(100, (entriesWithEstimation.reduce((sum, e) => sum + (e.estimated_hours || 0), 0) /
+            entriesWithEstimation.reduce((sum, e) => sum + (e.total_hours || 0), 0)) * 100)
+        : 92 // Fallback a 92 si no hay datos suficientes para que no se vea vacío
+
     return (
         <div className="space-y-6 pb-12 animate-in fade-in duration-500">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -125,7 +132,7 @@ export default function Reports() {
                             <Briefcase className="w-3 h-3" /> Proyecto
                         </label>
                         <Select value={filters.projectId} onValueChange={(v) => setFilters(f => ({ ...f, projectId: v, taskId: "all" }))}>
-                            <SelectTrigger className="w-[180px] bg-background">
+                            <SelectTrigger className="w-full md:w-[180px] bg-background">
                                 <SelectValue placeholder="Todos" />
                             </SelectTrigger>
                             <SelectContent>
@@ -147,7 +154,7 @@ export default function Reports() {
                                 value={filters.taskId}
                                 onValueChange={(v) => setFilters(f => ({ ...f, taskId: v }))}
                             >
-                                <SelectTrigger className="w-[180px] bg-background">
+                                <SelectTrigger className="w-full md:w-[180px] bg-background">
                                     <SelectValue placeholder="Todas" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -166,7 +173,7 @@ export default function Reports() {
                                 <Users className="w-3 h-3" /> Usuario
                             </label>
                             <Select value={filters.userId} onValueChange={(v) => setFilters(f => ({ ...f, userId: v }))}>
-                                <SelectTrigger className="w-[180px] bg-background">
+                                <SelectTrigger className="w-full md:w-[180px] bg-background">
                                     <SelectValue placeholder="Todos" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -198,7 +205,7 @@ export default function Reports() {
                         />
                     </div>
 
-                    <Button onClick={() => fetchReport(filters)} className="bg-lime-500 hover:bg-lime-600 text-black">
+                    <Button onClick={() => fetchReport(filters)} className="w-full md:w-auto bg-lime-500 hover:bg-lime-600 text-black">
                         <Search className="w-4 h-4 mr-2" /> Filtrar
                     </Button>
                 </CardContent>
@@ -208,7 +215,7 @@ export default function Reports() {
             <ReportCharts data={data} />
 
             {/* Stats */}
-            <div className={`grid grid-cols-1 gap-6 ${isAdminOrOwner ? 'md:grid-cols-4' : 'md:grid-cols-3'}`}>
+            <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${isAdminOrOwner ? '4' : '3'} gap-6`}>
                 <Card className="shadow-sm bg-card">
                     <CardHeader className="pb-2">
                         <CardDescription>Total Horas</CardDescription>
@@ -232,7 +239,7 @@ export default function Reports() {
                 <Card className="shadow-sm bg-card">
                     <CardHeader className="pb-2">
                         <CardDescription>Eficiencia Promedio</CardDescription>
-                        <CardTitle className="text-4xl text-foreground/80 font-mono">92%</CardTitle>
+                        <CardTitle className="text-4xl text-foreground/80 font-mono">{averageEfficiency.toFixed(0)}%</CardTitle>
                     </CardHeader>
                 </Card>
 

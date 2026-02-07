@@ -19,6 +19,7 @@ export interface ReportEntry {
     project_color: string | null
     project_hourly_rate: number
     task_name: string
+    estimated_hours: number | null
 }
 
 export interface ReportFilters {
@@ -45,7 +46,7 @@ export function useReportsData() {
                     *,
                     projects(name, hourly_rate, color),
                     profiles(full_name, avatar_url),
-                    tasks(name)
+                    tasks(name, estimated_hours)
                 `)
                 .eq('organization_id', organization.id)
 
@@ -84,7 +85,8 @@ export function useReportsData() {
                 project_name: (entry.projects as any)?.name || "Sin Proyecto",
                 project_color: (entry.projects as any)?.color || "#cbd5e1",
                 project_hourly_rate: (entry.projects as any)?.hourly_rate || 0,
-                task_name: (entry.tasks as any)?.name || ""
+                task_name: (entry.tasks as any)?.name || "",
+                estimated_hours: (entry.tasks as any)?.estimated_hours || null
             }))
 
             setData(formattedData)

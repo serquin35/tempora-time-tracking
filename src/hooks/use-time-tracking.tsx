@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/components/auth-context"
 import { differenceInSeconds, differenceInHours } from "date-fns"
 import { ZombieTimerRecoveryDialog } from "@/components/dialogs/zombie-timer-recovery-dialog"
+import { audioService } from "@/lib/audio-utils"
 
 export type TimeEntryStatus = "active" | "paused" | "completed"
 
@@ -114,6 +115,44 @@ function useTimeTrackingInternal() {
 
         document.addEventListener('visibilitychange', handleVisibilityChange)
         return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }, [activeEntry])
+
+    const lastChimeMinuteRef = useRef<number | null>(null)
+
+    // --- AVISADORES Y RECORDATORIOS ---
+    useEffect(() => {
+        // 1. Avisador por horas / medias horas (si está activo)
+        const hourlyInterval = setInterval(() => {
+            if (activeEntry?.status === 'active') {
+                const now = new Date()
+                const minutes = now.getMinutes()
+
+                // Si estamos en el minuto 0 o 30 y no ha sonado ya en este minuto
+                if ((minutes === 0 || minutes === 30) && lastChimeMinuteRef.current !== minutes) {
+                    audioService.playClockChime()
+                    lastChimeMinuteRef.current = minutes
+                } else if (minutes !== 0 && minutes !== 30) {
+                    // Resetear el ref cuando salimos del minuto clave
+                    lastChimeMinuteRef.current = null
+                }
+            }
+        }, 1000) // Revisar cada segundo para mayor precisión
+
+        // 2. Recordatorio cada 15 min si está parado y la pestaña está abierta
+        let idleReminderInterval: ReturnType<typeof setInterval> | null = null
+        if (!activeEntry) {
+            idleReminderInterval = setInterval(() => {
+                // Solo avisar si el documento es visible para no molestar en segundo plano excesivamente
+                if (document.visibilityState === 'visible') {
+                    audioService.playReminder()
+                }
+            }, 15 * 60 * 1000) // 15 minutos
+        }
+
+        return () => {
+            clearInterval(hourlyInterval)
+            if (idleReminderInterval) clearInterval(idleReminderInterval)
+        }
     }, [activeEntry])
 
     const clockIn = async (projectId?: string, taskId?: string) => {
