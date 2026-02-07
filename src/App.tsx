@@ -49,6 +49,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!user) {
+    // Si no hay usuario pero estamos en un flujo de recuperación, 
+    // no redirigimos para que el AuthListener en App.tsx pueda actuar
+    if (window.location.hash.includes('type=recovery')) {
+      return <LoadingFallback />
+    }
     return <Navigate to="/login" />
   }
 
