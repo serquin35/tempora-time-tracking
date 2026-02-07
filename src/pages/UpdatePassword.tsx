@@ -5,38 +5,52 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { supabase } from "@/lib/supabase"
 import { useNavigate } from "react-router-dom"
-import { Lock } from "lucide-react"
+import { Lock, Loader2 } from "lucide-react"
 
 export default function UpdatePassword() {
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [loading, setLoading] = useState(false)
+    const [isValidating, setIsValidating] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const navigate = useNavigate()
 
     useEffect(() => {
-        // Escuchamos cambios de auth (Supabase procesa el hash de la URL asíncronamente)
+        // Escuchar cambios de auth (Supabase procesa el hash de la URL asíncronamente)
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             if (session) {
-                setError(null) // Si hay sesión, quitamos cualquier mensaje de error
+                setError(null)
+                setIsValidating(false)
             }
         })
 
-        const checkSession = async () => {
+        const verify = async () => {
+            // Damos un margen inicial para que Supabase procese el hash
+            await new Promise(resolve => setTimeout(resolve, 1500))
             const { data: { session } } = await supabase.auth.getSession()
-            if (!session) {
-                // Si no hay sesión inmediata, esperamos 2 segundos antes de mostrar error
-                // dando tiempo a que el hash sea procesado
-                setTimeout(async () => {
-                    const { data: { session: retrySession } } = await supabase.auth.getSession()
-                    if (!retrySession) {
-                        setError("No se ha podido validar la sesión de recuperación. Por favor, solicita un nuevo enlace desde la pantalla de login.")
-                    }
-                }, 2000)
+
+            if (session) {
+                setError(null)
+                setIsValidating(false)
+            } else {
+                // Si tras el margen extra no hay nada y NO hay hash en la URL, error
+                if (!window.location.hash.includes('access_token')) {
+                    setError("La sesión de recuperación ha expirado o el enlace es inválido. Por favor, solicita uno nuevo desde el login.")
+                    setIsValidating(false)
+                } else {
+                    // Si HAY hash pero no hay sesión, esperamos un poco más (retraso de red)
+                    setTimeout(async () => {
+                        const { data: { session: retrySession } } = await supabase.auth.getSession()
+                        if (!retrySession) {
+                            setError("No se ha podido validar la sesión. Intenta recargar la página o solicita un nuevo enlace.")
+                        }
+                        setIsValidating(false)
+                    }, 2000)
+                }
             }
         }
 
-        checkSession()
+        verify()
         return () => subscription.unsubscribe()
     }, [])
 
@@ -64,10 +78,23 @@ export default function UpdatePassword() {
         if (error) {
             setError(error.message)
         } else {
-            // Éxito, redirigir al dashboard
             navigate("/")
         }
         setLoading(false)
+    }
+
+    if (isValidating && !error) {
+        return (
+            <div className="flex h-screen w-full items-center justify-center bg-zinc-50 dark:bg-zinc-950 px-4">
+                <div className="flex flex-col items-center gap-4 text-center">
+                    <Loader2 className="w-10 h-10 animate-spin text-lime-500" />
+                    <div className="space-y-1">
+                        <p className="font-medium">Validando seguridad...</p>
+                        <p className="text-xs text-zinc-500">Esto solo tomará un momento</p>
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -78,7 +105,7 @@ export default function UpdatePassword() {
                         <Lock className="w-6 h-6 text-lime-500" /> Nueva Contraseña
                     </CardTitle>
                     <CardDescription>
-                        Ingresa tu nueva contraseña para acceder a Tempora.
+                        Crea una nueva contraseña segura para tu cuenta.
                     </CardDescription>
                 </CardHeader>
                 <form onSubmit={handleUpdate}>
@@ -96,6 +123,7 @@ export default function UpdatePassword() {
                                 required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                disabled={!!error}
                             />
                         </div>
                         <div className="grid gap-2">
@@ -106,13 +134,19 @@ export default function UpdatePassword() {
                                 required
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
+                                disabled={!!error}
                             />
                         </div>
                     </CardContent>
-                    <CardFooter>
-                        <Button className="w-full" type="submit" disabled={loading}>
+                    <CardFooter className="flex flex-col gap-3">
+                        <Button className="w-full" type="submit" disabled={loading || !!error}>
                             {loading ? "Actualizando..." : "Cambiar Contraseña"}
                         </Button>
+                        {error && (
+                            <Button variant="outline" className="w-full" onClick={() => navigate("/login")}>
+                                Volver al Login
+                            </Button>
+                        )}
                     </CardFooter>
                 </form>
             </Card>

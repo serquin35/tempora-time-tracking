@@ -70,13 +70,13 @@ function AuthListener() {
   useEffect(() => {
     // Escuchar eventos de recuperación de contraseña de Supabase
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
+      if (event === 'PASSWORD_RECOVERY' && window.location.pathname !== '/update-password') {
         navigate('/update-password', { replace: true })
       }
     })
 
     // Caso de borde: Si entramos con el hash pero el evento no se dispara a tiempo
-    if (window.location.hash.includes('type=recovery')) {
+    if (window.location.hash.includes('type=recovery') && window.location.pathname !== '/update-password') {
       navigate('/update-password', { replace: true })
     }
 
