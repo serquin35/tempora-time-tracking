@@ -20,6 +20,7 @@ const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"))
 const Help = lazy(() => import("@/pages/Help"))
 const HelpCategory = lazy(() => import("@/pages/HelpCategory"))
 const HelpArticle = lazy(() => import("@/pages/HelpArticle"))
+const UpdatePassword = lazy(() => import("@/pages/UpdatePassword"))
 
 function LoadingFallback() {
   return (
@@ -66,6 +67,7 @@ export default function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/update-password" element={<UpdatePassword />} />
               <Route path="/" element={
                 <ProtectedRoute>
                   <Dashboard />

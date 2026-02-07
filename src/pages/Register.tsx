@@ -26,7 +26,7 @@ export default function Register() {
             return
         }
 
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
             email,
             password,
             options: {
@@ -39,10 +39,17 @@ export default function Register() {
         if (error) {
             setError(error.message)
             setLoading(false)
+        } else if (data.user && !data.session) {
+            // Se requiere confirmación de email
+            setSuccessMessage("¡Cuenta creada! Por favor, revisa tu correo para confirmar tu registro antes de iniciar sesión.")
+            setLoading(false)
         } else {
+            // Login automático (probablemente confirmación desactivada)
             navigate("/")
         }
     }
+
+    const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
     return (
         <div className="flex h-screen w-full items-center justify-center bg-zinc-50 dark:bg-zinc-950 px-4">
@@ -65,6 +72,11 @@ export default function Register() {
                         {error && (
                             <div className="p-3 text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-md">
                                 {error}
+                            </div>
+                        )}
+                        {successMessage && (
+                            <div className="p-3 text-sm text-green-500 bg-green-50 dark:bg-green-900/20 rounded-md">
+                                {successMessage}
                             </div>
                         )}
                         <div className="grid gap-2">
