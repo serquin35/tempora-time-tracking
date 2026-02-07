@@ -16,7 +16,7 @@ export default function UpdatePassword() {
 
     useEffect(() => {
         // Escuchamos cambios de auth (Supabase procesa el hash de la URL asíncronamente)
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             if (session) {
                 setError(null) // Si hay sesión, quitamos cualquier mensaje de error
             }
