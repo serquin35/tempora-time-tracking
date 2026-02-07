@@ -1,10 +1,12 @@
 import { lazy, Suspense } from "react"
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom"
 import { AuthProvider, useAuth } from "@/components/auth-context"
 import { TimeTrackingProvider } from "@/hooks/use-time-tracking"
 import { ThemeProvider } from "@/components/theme-provider"
 import Layout from "@/components/layout/Layout"
 import { Loader2 } from "lucide-react"
+import { useEffect } from "react"
+import { supabase } from "@/lib/supabase"
 
 // Lazy Loading Pages
 const Login = lazy(() => import("@/pages/Login"))
@@ -57,11 +59,34 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   )
 }
 
+function AuthListener() {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // Escuchar eventos de recuperación de contraseña de Supabase
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        navigate('/update-password', { replace: true })
+      }
+    })
+
+    // Caso de borde: Si entramos con el hash pero el evento no se dispara a tiempo
+    if (window.location.hash.includes('type=recovery')) {
+      navigate('/update-password', { replace: true })
+    }
+
+    return () => subscription.unsubscribe()
+  }, [navigate])
+
+  return null
+}
+
 export default function App() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
       <AuthProvider>
         <Router>
+          <AuthListener />
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
               <Route path="/login" element={<Login />} />
