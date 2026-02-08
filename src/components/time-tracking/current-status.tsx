@@ -133,7 +133,7 @@ export function CurrentStatus() {
             <div className="relative z-10 space-y-4">
                 <div className="flex flex-col gap-4">
                     {/* Top Row: Label, Project Pill & PiP */}
-                    <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3 relative pr-24">
                         <div className="flex flex-wrap items-center gap-2">
                             <p className="text-zinc-500 dark:text-zinc-400 font-medium tracking-wide uppercase text-xs whitespace-nowrap">Sesión Actual</p>
 
@@ -155,10 +155,8 @@ export function CurrentStatus() {
                                     )}
                                 </div>
                             )}
-                        </div>
 
-                        {/* PiP Button */}
-                        <div className="flex-shrink-0">
+                            {/* PiP Button */}
                             <FloatingTimer />
                         </div>
                     </div>
