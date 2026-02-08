@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useTimeTracking } from '@/hooks/use-time-tracking'
 import { Button } from '@/components/ui/button'
 import { MonitorPlay } from 'lucide-react'
@@ -149,7 +149,8 @@ export function FloatingTimer() {
     }, [isPiPActive, activeEntry?.status, activeEntry?.project?.name, togglePause, clockOut]);
 
     // Función de dibujado extraída para reutilización
-    const drawFrame = (ctx: CanvasRenderingContext2D) => {
+    // IMPORTANTE: Usar useCallback para que se actualice cuando cambie el estado
+    const drawFrame = useCallback((ctx: CanvasRenderingContext2D) => {
         const canvas = ctx.canvas;
 
         // 1. Limpiar y Fondo con Gradiente
@@ -207,7 +208,7 @@ export function FloatingTimer() {
             ctx.font = 'bold 12px sans-serif'
             ctx.fillText('EN VIVO', canvas.width / 2, 25)
         }
-    }
+    }, [activeEntry?.status, elapsedTime])
 
     // Efecto para dibujar el tiempo en el canvas continuamente
     useEffect(() => {
