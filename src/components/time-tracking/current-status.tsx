@@ -129,41 +129,66 @@ export function CurrentStatus() {
             {/* Background Decoration - Adapted for Light Mode */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-lime-400/10 dark:bg-lime-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
-            <div className="relative z-10 flex justify-between items-start">
-                <div className="space-y-1">
-                    <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-2">
-                            <p className="text-zinc-500 dark:text-zinc-400 font-medium tracking-wide uppercase text-xs">Sesión Actual</p>
+            {/* Header: Project Info & PiP - Mobile Optimized */}
+            <div className="relative z-10 space-y-4">
+                <div className="flex flex-col gap-4">
+                    {/* Top Row: Label, Project Pill & PiP */}
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <p className="text-zinc-500 dark:text-zinc-400 font-medium tracking-wide uppercase text-xs whitespace-nowrap">Sesión Actual</p>
+
+                            {/* Status Badge (Mobile: Inline here, Desktop: Top Right) */}
+                            <div className={`md:hidden px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${isPaused ? 'bg-amber-500/10 text-amber-600 dark:text-amber-500 border border-amber-500/20' : 'bg-lime-500/10 text-lime-600 dark:text-lime-400 border border-lime-500/20'}`}>
+                                {isPaused ? "Pausado" : "En Vivo"}
+                            </div>
+
                             {currentProject && (
-                                <div className="flex flex-col gap-1">
-                                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 flex items-center gap-1.5 w-fit">
-                                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: currentProject.color }} />
-                                        {currentProject.name}
+                                <div className="flex items-center flex-wrap gap-1">
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 flex items-center gap-1.5 max-w-[150px] truncate">
+                                        <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: currentProject.color }} />
+                                        <span className="truncate">{currentProject.name}</span>
                                     </span>
                                     {currentTask && (
-                                        <span className="text-[10px] text-zinc-500 font-medium ml-1">
+                                        <span className="text-[10px] text-zinc-500 font-medium ml-1 max-w-[100px] truncate">
                                             ↳ {currentTask.name}
                                         </span>
                                     )}
                                 </div>
                             )}
                         </div>
-                        <FloatingTimer />
+
+                        {/* PiP Button */}
+                        <div className="flex-shrink-0">
+                            <FloatingTimer />
+                        </div>
                     </div>
-                    <div className="mt-2 text-5xl md:text-6xl font-bold font-mono tracking-tighter tabular-nums text-zinc-900 dark:text-white">
-                        {formatTime(elapsedTime)}
+
+                    {/* Timer Display */}
+                    <div className="flex items-end justify-between">
+                        <div>
+                            <div className="text-4xl sm:text-5xl md:text-6xl font-bold font-mono tracking-tighter tabular-nums text-zinc-900 dark:text-white transition-all">
+                                {formatTime(elapsedTime)}
+                            </div>
+                            <p className="text-zinc-500 mt-1 text-xs sm:text-sm flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                Iniciado a las {format(new Date(activeEntry.clock_in), "h:mm a")}
+                            </p>
+                        </div>
+
+                        {/* Status Badge (Desktop: Bottom Right of this block, or Top Right absolute) */}
+                        {/* We hide the absolute one on mobile and show inline above. On desktop we keep absolute? 
+                            Actually, let's keep the absolute one for desktop ONLY.
+                        */}
                     </div>
-                    <p className="text-zinc-500 mt-2 text-sm flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        Iniciado a las {format(new Date(activeEntry.clock_in), "h:mm a")}
-                    </p>
                 </div>
-                <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg backdrop-blur-md ${isPaused ? 'bg-amber-500/10 text-amber-600 dark:text-amber-500 border border-amber-500/20' : 'bg-lime-500/10 text-lime-600 dark:text-lime-400 border border-lime-500/20'}`}>
+
+                {/* Desktop Status Badge (Hidden on Mobile) */}
+                <div className={`hidden md:block absolute top-0 right-0 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg backdrop-blur-md ${isPaused ? 'bg-amber-500/10 text-amber-600 dark:text-amber-500 border border-amber-500/20' : 'bg-lime-500/10 text-lime-600 dark:text-lime-400 border border-lime-500/20'}`}>
                     {isPaused ? "Pausado" : "En Vivo"}
                 </div>
             </div>
 
-            <div className="relative z-10 flex gap-4 mt-8">
+            <div className="relative z-10 flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8">
                 <Button
                     variant="outline"
                     size="lg"

@@ -202,7 +202,7 @@ export default function Dashboard() {
                         </div>
                     </CardHeader>
                     <CardContent className="pt-4">
-                        <div className="h-[250px] w-full px-2">
+                        <div className="h-[250px] w-full px-2 min-w-0">
                             {isLoading ? (
                                 <div className="w-full h-full flex items-center justify-center bg-muted/20 rounded-xl animate-pulse">
                                     <p className="text-sm text-muted-foreground">Cargando...</p>
