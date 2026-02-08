@@ -20,6 +20,18 @@ export function FloatingTimer() {
         return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
     }
 
+    // 0. Sincronizar el estado del video con el estado de la app
+    // Esto es CRUCIAL para que el widget de PiP muestre el icono correcto (Play vs Pause)
+    useEffect(() => {
+        if (!videoRef.current || !isPiPActive) return;
+
+        if (activeEntry?.status === 'active') {
+            videoRef.current.play().catch(() => { });
+        } else {
+            videoRef.current.pause();
+        }
+    }, [activeEntry?.status, isPiPActive]);
+
     // Configurar Media Session para permitir control desde el sistema (teclas multimedia, barra tareas)
     useEffect(() => {
         if ('mediaSession' in navigator && isPiPActive) {
@@ -167,7 +179,21 @@ export function FloatingTimer() {
         <div className="flex items-center">
             {/* Elementos ocultos necesarios para la magia del PiP */}
             <canvas ref={canvasRef} width={400} height={200} className="hidden" />
-            <video ref={videoRef} className="hidden" muted autoPlay playsInline />
+            <video
+                ref={videoRef}
+                className="hidden"
+                muted
+                autoPlay
+                playsInline
+                onPause={() => {
+                    // Si el usuario pausa desde el widget de PiP del navegador
+                    if (activeEntry?.status === 'active') togglePause();
+                }}
+                onPlay={() => {
+                    // Si el usuario reanuda desde el widget de PiP del navegador
+                    if (activeEntry?.status === 'paused') togglePause();
+                }}
+            />
 
             <Button
                 variant="outline"
