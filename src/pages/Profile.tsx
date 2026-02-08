@@ -470,7 +470,7 @@ export default function Profile() {
                                     <h4 className="font-semibold text-foreground">Unirse a una organización</h4>
                                     <p className="text-sm text-muted-foreground">Si tu jefe o administrador te ha dado un código, introdúcelo aquí.</p>
                                 </div>
-                                <form onSubmit={handleJoinOrganization} className="flex gap-2">
+                                <form onSubmit={handleJoinOrganization} className="flex flex-col sm:flex-row gap-2">
                                     <Input
                                         placeholder="Pegar código de organización aquí (UUID)"
                                         className="bg-background border-zinc-700 font-mono"
@@ -493,7 +493,7 @@ export default function Profile() {
                                     </h4>
                                     <p className="text-sm text-muted-foreground">Crea una nueva organizacion para tu equipo o negocio.</p>
                                 </div>
-                                <form onSubmit={handleCreateOrganization} className="flex gap-2">
+                                <form onSubmit={handleCreateOrganization} className="flex flex-col sm:flex-row gap-2">
                                     <Input
                                         placeholder="Nombre de tu empresa (ej. Acme Corp)"
                                         className="bg-background border-zinc-700"

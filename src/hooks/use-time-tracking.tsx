@@ -132,10 +132,22 @@ function useTimeTrackingInternal() {
                 // Si estamos en el minuto 0 o 30 y no ha sonado ya en este minuto
                 if ((minutes === 0 || minutes === 30) && lastChimeMinuteRef.current !== minutes) {
                     audioService.playClockChime()
-                    toast.info(`¡Campana horaria!: ${minutes === 0 ? 'Hora en punto' : 'Media hora'}`, {
-                        description: "Sigue así, vas por buen camino.",
-                        duration: 5000,
-                    })
+                    toast.custom(() => (
+                        <div className="bg-zinc-950 border border-lime-500/20 rounded-xl shadow-2xl shadow-lime-500/10 p-4 flex items-start gap-4 w-[356px]">
+                            <div className="h-10 w-10 rounded-full bg-lime-500/10 flex items-center justify-center flex-shrink-0 text-lime-500">
+                                <span className="text-xl">🔔</span>
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="font-bold text-sm text-lime-500">
+                                    ¡Campana horaria!
+                                </h3>
+                                <p className="text-xs text-zinc-400 mt-1">
+                                    {minutes === 0 ? 'Hora en punto' : 'Media hora'}. Sigue así, vas por buen camino.
+                                </p>
+                            </div>
+                        </div>
+                    ), { duration: 5000 })
+
                     lastChimeMinuteRef.current = minutes
                 } else if (minutes !== 0 && minutes !== 30) {
                     // Resetear el ref cuando salimos del minuto clave
@@ -151,10 +163,27 @@ function useTimeTrackingInternal() {
                 // Solo avisar si el documento es visible para no molestar en segundo plano excesivamente
                 if (document.visibilityState === 'visible') {
                     audioService.playReminder()
-                    toast.warning("Recordatorio: Cronómetro detenido", {
-                        description: "¿Has olvidado iniciar tu sesión de trabajo?",
-                        duration: 10000,
-                    })
+                    toast.custom((t) => (
+                        <div className="bg-zinc-900 border border-amber-500/20 rounded-xl shadow-2xl shadow-amber-500/10 p-4 flex items-start gap-4 w-[356px]">
+                            <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0 text-amber-500 animate-pulse">
+                                <span className="text-xl">⏸️</span>
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="font-bold text-sm text-amber-500">
+                                    Recordatorio: Cronómetro detenido
+                                </h3>
+                                <p className="text-xs text-zinc-400 mt-1">
+                                    ¿Has olvidado iniciar tu sesión de trabajo?
+                                </p>
+                                <button
+                                    onClick={() => toast.dismiss(t)}
+                                    className="mt-2 text-[10px] text-zinc-500 hover:text-zinc-300 underline"
+                                >
+                                    Descartar
+                                </button>
+                            </div>
+                        </div>
+                    ), { duration: 10000 })
                 }
             }, 15 * 60 * 1000) // 15 minutos
         }

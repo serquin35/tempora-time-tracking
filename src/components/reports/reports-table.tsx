@@ -28,7 +28,8 @@ export function ReportsTable({ data }: ReportsTableProps) {
 
     return (
         <div className="rounded-md border bg-card shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Desktop View */}
+            <div className="hidden md:block overflow-x-auto">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -107,6 +108,75 @@ export function ReportsTable({ data }: ReportsTableProps) {
                         ))}
                     </TableBody>
                 </Table>
+            </div>
+
+            {/* Mobile View (Cards) */}
+            <div className="md:hidden space-y-4 p-4">
+                {data.map((entry) => (
+                    <div key={entry.id} className="bg-card border rounded-xl p-4 shadow-sm flex flex-col gap-3">
+                        {/* Header: Date & Duration */}
+                        <div className="flex justify-between items-start">
+                            <div className="flex flex-col">
+                                <span className="font-semibold text-sm">
+                                    {format(new Date(entry.clock_in), "d MMM, yyyy", { locale: es })}
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                    {format(new Date(entry.clock_in), "HH:mm")} - {entry.clock_out ? format(new Date(entry.clock_out), "HH:mm") : '...'}
+                                </span>
+                            </div>
+                            <div className="flex flex-col items-end">
+                                <span className="font-mono font-bold text-lg text-primary">
+                                    {entry.total_hours?.toFixed(2)}h
+                                </span>
+                                {entry.project_hourly_rate && (
+                                    <span className="text-xs text-muted-foreground font-mono">
+                                        {((entry.total_hours || 0) * entry.project_hourly_rate).toFixed(2)}€
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* User & Project */}
+                        <div className="flex items-center justify-between border-t border-b border-border/50 py-2 my-1">
+                            {/* User */}
+                            <div className="flex items-center gap-2">
+                                <Avatar className="h-5 w-5">
+                                    <AvatarImage src={entry.user_avatar || ""} />
+                                    <AvatarFallback className="text-[10px]">{entry.user_name?.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                                <span className="text-xs text-muted-foreground truncate max-w-[100px]">
+                                    {entry.user_name}
+                                </span>
+                            </div>
+
+                            {/* Project Badge */}
+                            <div>
+                                {entry.project_id ? (
+                                    <Badge variant="outline" style={{ borderColor: entry.project_color || '#ccc', color: entry.project_color || '#ccc' }} className="bg-transparent text-[10px] h-5">
+                                        {entry.project_name}
+                                    </Badge>
+                                ) : (
+                                    <span className="text-[10px] text-muted-foreground italic">Sin Proyecto</span>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Task & Description */}
+                        <div className="flex flex-col gap-1">
+                            {entry.task_name && (
+                                <span className="font-medium text-sm flex items-center gap-1.5">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-primary/50" />
+                                    {entry.task_name}
+                                </span>
+                            )}
+                            {entry.description && (
+                                <p className="text-xs text-muted-foreground line-clamp-2 pl-3 border-l-2 border-border/50">
+                                    {entry.description}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     )
