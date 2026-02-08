@@ -74,12 +74,17 @@ export default function Reports() {
 
     const isAdminOrOwner = userRole === 'admin' || userRole === 'owner'
 
-    // Cálculo de Eficiencia
-    const entriesWithEstimation = data.filter(e => e.estimated_hours && e.total_hours && e.total_hours > 0)
+    // Cálculo de Eficiencia (solo para tareas con estimación y más de 1 minuto registrado)
+    const entriesWithEstimation = data.filter(e =>
+        e.estimated_hours &&
+        e.estimated_hours > 0 &&
+        e.total_hours &&
+        e.total_hours > 0.02 // Al menos 1.2 minutos registrados para evitar 100% ficticios
+    )
     const averageEfficiency = entriesWithEstimation.length > 0
         ? Math.min(100, (entriesWithEstimation.reduce((sum, e) => sum + (e.estimated_hours || 0), 0) /
             entriesWithEstimation.reduce((sum, e) => sum + (e.total_hours || 0), 0)) * 100)
-        : 92 // Fallback a 92 si no hay datos suficientes para que no se vea vacío
+        : 0
 
     return (
         <div className="space-y-6 pb-12 animate-in fade-in duration-500">
@@ -238,8 +243,14 @@ export default function Reports() {
                 </Card>
                 <Card className="shadow-sm bg-card">
                     <CardHeader className="pb-2">
-                        <CardDescription>Eficiencia Promedio</CardDescription>
-                        <CardTitle className="text-4xl text-foreground/80 font-mono">{averageEfficiency.toFixed(0)}%</CardTitle>
+                        <CardDescription className="flex items-center justify-between">
+                            Eficiencia Promedio
+                            {averageEfficiency > 0 && <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded">Basada en estimaciones</span>}
+                        </CardDescription>
+                        <CardTitle className="text-4xl text-foreground/80 font-mono">
+                            {averageEfficiency > 0 ? `${averageEfficiency.toFixed(0)}%` : "---"}
+                        </CardTitle>
+                        {averageEfficiency === 0 && <p className="text-[10px] text-muted-foreground mt-1">Sin tareas estimadas registradas</p>}
                     </CardHeader>
                 </Card>
 

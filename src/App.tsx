@@ -7,6 +7,7 @@ import Layout from "@/components/layout/Layout"
 import { Loader2 } from "lucide-react"
 import { useEffect } from "react"
 import { supabase } from "@/lib/supabase"
+import { Toaster } from "sonner"
 
 // Lazy Loading Pages
 const Login = lazy(() => import("@/pages/Login"))
@@ -94,6 +95,7 @@ export default function App() {
           <AuthListener />
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
+              {/* ... routes ... */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -154,6 +156,7 @@ export default function App() {
             </Routes>
           </Suspense>
         </Router>
+        <Toaster position="top-right" expand={true} richColors />
       </AuthProvider>
     </ThemeProvider>
   )

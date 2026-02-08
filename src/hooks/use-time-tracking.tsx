@@ -4,6 +4,7 @@ import { useAuth } from "@/components/auth-context"
 import { differenceInSeconds, differenceInHours } from "date-fns"
 import { ZombieTimerRecoveryDialog } from "@/components/dialogs/zombie-timer-recovery-dialog"
 import { audioService } from "@/lib/audio-utils"
+import { toast } from "sonner"
 
 export type TimeEntryStatus = "active" | "paused" | "completed"
 
@@ -130,6 +131,10 @@ function useTimeTrackingInternal() {
                 // Si estamos en el minuto 0 o 30 y no ha sonado ya en este minuto
                 if ((minutes === 0 || minutes === 30) && lastChimeMinuteRef.current !== minutes) {
                     audioService.playClockChime()
+                    toast.info(`¡Campana horaria!: ${minutes === 0 ? 'Hora en punto' : 'Media hora'}`, {
+                        description: "Sigue así, vas por buen camino.",
+                        duration: 5000,
+                    })
                     lastChimeMinuteRef.current = minutes
                 } else if (minutes !== 0 && minutes !== 30) {
                     // Resetear el ref cuando salimos del minuto clave
@@ -145,6 +150,10 @@ function useTimeTrackingInternal() {
                 // Solo avisar si el documento es visible para no molestar en segundo plano excesivamente
                 if (document.visibilityState === 'visible') {
                     audioService.playReminder()
+                    toast.warning("Recordatorio: Cronómetro detenido", {
+                        description: "¿Has olvidado iniciar tu sesión de trabajo?",
+                        duration: 10000,
+                    })
                 }
             }, 15 * 60 * 1000) // 15 minutos
         }
@@ -237,12 +246,12 @@ function useTimeTrackingInternal() {
             .eq("id", activeEntry.id)
 
         if (error) {
-            console.error("Error clocking out:", error)
-            return
+            console.error("Error updating time entry:", error)
+        } else {
+            audioService.playSuccess()
+            setActiveEntry(null)
+            setElapsedTime(0)
         }
-
-        setActiveEntry(null)
-        setElapsedTime(0)
     }
 
     const togglePause = async () => {

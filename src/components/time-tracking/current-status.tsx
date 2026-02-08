@@ -13,6 +13,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
+import { FloatingTimer } from "./floating-timer"
 import confetti from "canvas-confetti"
 
 export function CurrentStatus() {
@@ -130,21 +131,24 @@ export function CurrentStatus() {
 
             <div className="relative z-10 flex justify-between items-start">
                 <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                        <p className="text-zinc-500 dark:text-zinc-400 font-medium tracking-wide uppercase text-xs">Sesión Actual</p>
-                        {currentProject && (
-                            <div className="flex flex-col gap-1">
-                                <span className="px-2 py-0.5 rounded-full text-[10px] bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 flex items-center gap-1.5 w-fit">
-                                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: currentProject.color }} />
-                                    {currentProject.name}
-                                </span>
-                                {currentTask && (
-                                    <span className="text-[10px] text-zinc-500 font-medium ml-1">
-                                        ↳ {currentTask.name}
+                    <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-2">
+                            <p className="text-zinc-500 dark:text-zinc-400 font-medium tracking-wide uppercase text-xs">Sesión Actual</p>
+                            {currentProject && (
+                                <div className="flex flex-col gap-1">
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 flex items-center gap-1.5 w-fit">
+                                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: currentProject.color }} />
+                                        {currentProject.name}
                                     </span>
-                                )}
-                            </div>
-                        )}
+                                    {currentTask && (
+                                        <span className="text-[10px] text-zinc-500 font-medium ml-1">
+                                            ↳ {currentTask.name}
+                                        </span>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                        <FloatingTimer />
                     </div>
                     <div className="mt-2 text-5xl md:text-6xl font-bold font-mono tracking-tighter tabular-nums text-zinc-900 dark:text-white">
                         {formatTime(elapsedTime)}
