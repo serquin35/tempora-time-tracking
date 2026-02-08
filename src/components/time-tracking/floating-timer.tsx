@@ -46,7 +46,6 @@ export function FloatingTimer() {
         const color = activeEntry?.status === 'paused' ? '245, 158, 11' : '163, 230, 21';
 
         // DEBUG: Verificar el estado actual
-        console.log('[PiP Canvas] Redibujando - Status:', activeEntry?.status, 'Color:', color);
 
         // Fondo
         const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
