@@ -66,14 +66,13 @@ export function FloatingTimer() {
                 }
             });
 
-            // Usar botones de "Siguiente/Anterior" como atajos adicionales
-            navigator.mediaSession.setActionHandler('previoustrack', () => {
-                togglePause();
-            });
-
-            navigator.mediaSession.setActionHandler('nexttrack', () => {
-                if (window.confirm("¿Finalizar sesión actual?")) {
-                    clockOut();
+            // ELIMINAR handlers de navegación para quitar flechas innecesarias (YouTube style)
+            const actionsToRemove = ['previoustrack', 'nexttrack', 'seekbackward', 'seekforward', 'seekto', 'skipad'];
+            actionsToRemove.forEach(action => {
+                try {
+                    navigator.mediaSession.setActionHandler(action as MediaSessionAction, null);
+                } catch (e) {
+                    // Ignorar errores de acciones no soportadas
                 }
             });
         }
