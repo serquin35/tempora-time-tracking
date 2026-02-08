@@ -60,7 +60,6 @@ class AudioService {
      */
     async playClockChime() {
         try {
-            const now = this.context?.currentTime || 0;
             // Campana de cristal (frecuencias altas + armónicos)
             this.playNote(1046.50, 'triangle', 1.5, 0.2); // Do6
             this.playNote(2093, 'sine', 0.8, 0.05); // Octava
