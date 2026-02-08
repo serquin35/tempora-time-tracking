@@ -301,7 +301,7 @@ export default function Dashboard() {
 
 import { ChevronDown, ChevronUp } from "lucide-react"
 
-function RecentActivityItem({ entry, onResume, isLoading, isActive, isAnyActive }: any) {
+function RecentActivityItem({ entry, onResume, isLoading, isAnyActive }: any) {
     const [isExpanded, setIsExpanded] = useState(false)
 
     return (
