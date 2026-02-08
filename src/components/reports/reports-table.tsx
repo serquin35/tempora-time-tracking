@@ -12,6 +12,8 @@ import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { Link } from "react-router-dom"
 import type { ReportEntry } from "@/hooks/use-reports-data"
+import { useState } from "react"
+import { ChevronDown, ChevronUp } from "lucide-react"
 
 interface ReportsTableProps {
     data: ReportEntry[]
@@ -113,71 +115,98 @@ export function ReportsTable({ data }: ReportsTableProps) {
             {/* Mobile View (Cards) */}
             <div className="md:hidden space-y-4 p-4">
                 {data.map((entry) => (
-                    <div key={entry.id} className="bg-card border rounded-xl p-4 shadow-sm flex flex-col gap-3">
-                        {/* Header: Date & Duration */}
-                        <div className="flex justify-between items-start">
-                            <div className="flex flex-col">
-                                <span className="font-semibold text-sm">
-                                    {format(new Date(entry.clock_in), "d MMM, yyyy", { locale: es })}
-                                </span>
-                                <span className="text-xs text-muted-foreground">
-                                    {format(new Date(entry.clock_in), "HH:mm")} - {entry.clock_out ? format(new Date(entry.clock_out), "HH:mm") : '...'}
-                                </span>
-                            </div>
-                            <div className="flex flex-col items-end">
-                                <span className="font-mono font-bold text-lg text-primary">
-                                    {entry.total_hours?.toFixed(2)}h
-                                </span>
-                                {entry.project_hourly_rate && (
-                                    <span className="text-xs text-muted-foreground font-mono">
-                                        {((entry.total_hours || 0) * entry.project_hourly_rate).toFixed(2)}€
-                                    </span>
-                                )}
-                            </div>
+                    <MobileReportEntry key={entry.id} entry={entry} />
+                ))}
+            </div>
+        </div>
+    )
+}
+
+function MobileReportEntry({ entry }: { entry: ReportEntry }) {
+    const [isExpanded, setIsExpanded] = useState(false)
+
+    return (
+        <div
+            className={`bg-card border rounded-xl shadow-sm overflow-hidden transition-all duration-200 ${isExpanded ? 'ring-1 ring-primary/20' : ''}`}
+        >
+            {/* Header - Always Visible - Click to Toggle */}
+            <div
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="p-4 flex justify-between items-center cursor-pointer active:bg-muted/50 transition-colors"
+            >
+                <div className="flex flex-col gap-0.5">
+                    <span className="font-semibold text-sm">
+                        {format(new Date(entry.clock_in), "d MMM, yyyy", { locale: es })}
+                    </span>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <span>
+                            {format(new Date(entry.clock_in), "HH:mm")} - {entry.clock_out ? format(new Date(entry.clock_out), "HH:mm") : '...'}
+                        </span>
+                        {entry.total_hours && (
+                            <span className="font-mono font-medium text-primary bg-primary/10 px-1.5 rounded">
+                                {entry.total_hours.toFixed(2)}h
+                            </span>
+                        )}
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    {entry.project_hourly_rate && (
+                        <span className="text-xs font-mono font-medium text-muted-foreground">
+                            {((entry.total_hours || 0) * entry.project_hourly_rate).toFixed(2)}€
+                        </span>
+                    )}
+                    {isExpanded ?
+                        <ChevronUp className="w-5 h-5 text-muted-foreground" /> :
+                        <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                    }
+                </div>
+            </div>
+
+            {/* Expanded Content */}
+            {isExpanded && (
+                <div className="px-4 pb-4 pt-0 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <div className="h-px bg-border/50 w-full" />
+
+                    {/* User & Project Row */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Avatar className="h-6 w-6">
+                                <AvatarImage src={entry.user_avatar || ""} />
+                                <AvatarFallback className="text-[10px]">{entry.user_name?.substring(0, 2).toUpperCase()}</AvatarFallback>
+                            </Avatar>
+                            <span className="text-xs text-muted-foreground truncate max-w-[120px]">
+                                {entry.user_name}
+                            </span>
                         </div>
 
-                        {/* User & Project */}
-                        <div className="flex items-center justify-between border-t border-b border-border/50 py-2 my-1">
-                            {/* User */}
-                            <div className="flex items-center gap-2">
-                                <Avatar className="h-5 w-5">
-                                    <AvatarImage src={entry.user_avatar || ""} />
-                                    <AvatarFallback className="text-[10px]">{entry.user_name?.substring(0, 2).toUpperCase()}</AvatarFallback>
-                                </Avatar>
-                                <span className="text-xs text-muted-foreground truncate max-w-[100px]">
-                                    {entry.user_name}
-                                </span>
-                            </div>
-
-                            {/* Project Badge */}
-                            <div>
-                                {entry.project_id ? (
-                                    <Badge variant="outline" style={{ borderColor: entry.project_color || '#ccc', color: entry.project_color || '#ccc' }} className="bg-transparent text-[10px] h-5">
+                        <div>
+                            {entry.project_id ? (
+                                <Link to={`/projects/${entry.project_id}`} onClick={(e) => e.stopPropagation()}>
+                                    <Badge variant="outline" style={{ borderColor: entry.project_color || '#ccc', color: entry.project_color || '#ccc' }} className="bg-transparent text-[10px]">
                                         {entry.project_name}
                                     </Badge>
-                                ) : (
-                                    <span className="text-[10px] text-muted-foreground italic">Sin Proyecto</span>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Task & Description */}
-                        <div className="flex flex-col gap-1">
-                            {entry.task_name && (
-                                <span className="font-medium text-sm flex items-center gap-1.5">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-primary/50" />
-                                    {entry.task_name}
-                                </span>
-                            )}
-                            {entry.description && (
-                                <p className="text-xs text-muted-foreground line-clamp-2 pl-3 border-l-2 border-border/50">
-                                    {entry.description}
-                                </p>
+                                </Link>
+                            ) : (
+                                <span className="text-[10px] text-muted-foreground italic">Sin Proyecto</span>
                             )}
                         </div>
                     </div>
-                ))}
-            </div>
+
+                    {/* Task & Description */}
+                    <div className="bg-muted/30 rounded-lg p-3 space-y-1.5">
+                        {entry.task_name && (
+                            <div className="font-medium text-sm flex items-center gap-2">
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                {entry.task_name}
+                            </div>
+                        )}
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                            {entry.description || <span className="italic opacity-50">Sin descripción</span>}
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
