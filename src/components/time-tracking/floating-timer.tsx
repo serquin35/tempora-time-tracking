@@ -23,31 +23,49 @@ export function FloatingTimer() {
     // Configurar Media Session para permitir control desde el sistema (teclas multimedia, barra tareas)
     useEffect(() => {
         if ('mediaSession' in navigator && isPiPActive) {
+            const isPaused = activeEntry?.status === 'paused';
+
+            // Sincronizar el estado de reproducción con el sistema operativo
+            navigator.mediaSession.playbackState = isPaused ? 'paused' : 'playing';
+
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: activeEntry?.status === 'active' ? 'Tempora - Siguiendo Tiempo' : 'Tempora - Pausado',
+                title: isPaused ? 'PAUSADO - Tempora' : 'EN VIVO - Tempora',
                 artist: 'Sergio Quintero O.',
-                album: activeEntry?.status === 'active' ? 'Cronómetro en ejecución' : 'Sesión en pausa',
+                album: activeEntry?.project?.name || 'Seguimiento de Tiempo',
                 artwork: [
                     { src: 'https://img.icons8.com/flat-round/512/time-machine.png', sizes: '512x512', type: 'image/png' }
                 ]
             });
 
+            // Handler para REANUDAR (Botón Play del sistema)
             navigator.mediaSession.setActionHandler('play', () => {
                 if (activeEntry?.status === 'paused') togglePause();
             });
+
+            // Handler para PAUSAR (Botón Pause del sistema)
             navigator.mediaSession.setActionHandler('pause', () => {
                 if (activeEntry?.status === 'active') togglePause();
             });
+
+            // Handler para DETENER
             navigator.mediaSession.setActionHandler('stop', () => {
-                clockOut();
+                if (window.confirm("¿Deseas detener y guardar la sesión?")) {
+                    clockOut();
+                }
             });
-            // Opcional: usar nexttrack como atajo para detener (más común en teclados)
+
+            // Usar botones de "Siguiente/Anterior" como atajos adicionales
+            navigator.mediaSession.setActionHandler('previoustrack', () => {
+                togglePause();
+            });
+
             navigator.mediaSession.setActionHandler('nexttrack', () => {
-                const confirmed = window.confirm("¿Estás seguro de que deseas detener la sesión desde el reloj?");
-                if (confirmed) clockOut();
+                if (window.confirm("¿Finalizar sesión actual?")) {
+                    clockOut();
+                }
             });
         }
-    }, [isPiPActive, activeEntry?.status, togglePause, clockOut]);
+    }, [isPiPActive, activeEntry?.status, activeEntry?.project?.name, togglePause, clockOut]);
 
     // Efecto para dibujar el tiempo en el canvas continuamente
     useEffect(() => {

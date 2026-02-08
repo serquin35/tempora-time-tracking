@@ -19,6 +19,7 @@ export interface TimeEntry {
     status: TimeEntryStatus
     total_hours: number | null
     notes?: string
+    project?: { name: string }
 }
 
 // Internal hook implementation (not exported directly)
