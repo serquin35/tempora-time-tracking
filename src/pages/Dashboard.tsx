@@ -262,62 +262,31 @@ export default function Dashboard() {
                         <div className="space-y-4">
                             {recentEntries.length > 0 ? (
                                 recentEntries.map((entry) => (
-                                    <div
+                                    <RecentActivityItem
                                         key={entry.id}
-                                        className="flex items-center justify-between p-3 bg-background/50 border border-border/20 rounded-xl hover:bg-background/80 transition-all group"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <button
-                                                onClick={() => handleResume(entry.id, entry.project_id, entry.task_id)}
-                                                disabled={!!activeEntry || loadingEntryId === entry.id}
-                                                className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                                title="Reanudar esta tarea"
-                                            >
-                                                {loadingEntryId === entry.id ? (
-                                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                                ) : (
-                                                    <Play className="w-5 h-5 fill-current ml-0.5" />
-                                                )}
-                                            </button>
-                                            <div className="flex flex-col">
-                                                <span className="font-semibold text-sm">
-                                                    {entry.projects?.name || "Sin Proyecto"}
-                                                </span>
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                                                        {entry.projects?.color && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: entry.projects.color }} />}
-                                                        {entry.tasks?.name || "Sin tarea"}
-                                                    </span>
-                                                    <span className="text-[10px] text-muted-foreground/50">•</span>
-                                                    <span className="text-[10px] text-muted-foreground">
-                                                        {format(new Date(entry.clock_in), "d 'de' MMMM", { locale: es })}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="font-mono font-bold text-sm text-primary">{entry.total_hours?.toFixed(2)}h</div>
-                                            <div className="text-[10px] text-muted-foreground">Finalizado</div>
-                                        </div>
-                                    </div>
+                                        entry={entry}
+                                        onResume={() => handleResume(entry.id, entry.project_id, entry.task_id)}
+                                        isLoading={loadingEntryId === entry.id}
+                                        isActive={activeEntry?.id === entry.id}
+                                        isAnyActive={!!activeEntry}
+                                    />
                                 ))
                             ) : (
                                 <div className="flex flex-col items-center justify-center py-8 text-center space-y-2 opacity-50">
                                     <AlertCircle className="w-8 h-8 text-muted-foreground" />
-                                    <p className="text-xs">No hay sesiones recientes.<br />Finaliza tu sesión actual para verla aquí.</p>
+                                    <p className="text-sm">No hay sesiones recientes.<br />Finaliza tu sesión actual para verla aquí.</p>
                                 </div>
                             )}
 
-
                             {activeEntry && (
-                                <div className="p-3 bg-primary/5 border border-primary/20 rounded-xl border-dashed relative">
+                                <div className="p-3 bg-primary/5 border border-primary/20 rounded-xl border-dashed relative animate-in fade-in slide-in-from-bottom-2">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary animate-pulse">
                                             <Activity className="w-5 h-5" />
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="font-semibold text-xs text-primary">Sesión en curso</span>
-                                            <span className="text-[10px] text-muted-foreground">Registrando tiempo...</span>
+                                            <span className="font-semibold text-sm text-primary">Sesión en curso</span>
+                                            <span className="text-xs text-muted-foreground">Registrando tiempo...</span>
                                         </div>
                                     </div>
                                 </div>
@@ -327,5 +296,95 @@ export default function Dashboard() {
                 </Card>
             </div>
         </div >
+    )
+}
+
+import { ChevronDown, ChevronUp } from "lucide-react"
+
+function RecentActivityItem({ entry, onResume, isLoading, isActive, isAnyActive }: any) {
+    const [isExpanded, setIsExpanded] = useState(false)
+
+    return (
+        <div
+            className={`bg-background/50 border rounded-xl overflow-hidden transition-all duration-200 ${isExpanded ? 'ring-1 ring-primary/20 shadow-md bg-card' : 'border-border/20 hover:bg-background/80'}`}
+        >
+            {/* Header - Always Visible */}
+            <div
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="p-3 flex items-center justify-between cursor-pointer active:bg-muted/50"
+            >
+                <div className="flex items-center gap-3 overflow-hidden">
+                    {/* Play Button - Stop Propagation to avoid accordion toggle */}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            onResume()
+                        }}
+                        disabled={isAnyActive || isLoading}
+                        className="w-10 h-10 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-50 disabled:cursor-not-allowed group/btn"
+                        title="Reanudar esta tarea"
+                    >
+                        {isLoading ? (
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                            <Play className="w-5 h-5 fill-current ml-0.5 group-hover/btn:scale-110 transition-transform" />
+                        )}
+                    </button>
+
+                    <div className="flex flex-col min-w-0">
+                        <span className="font-semibold text-sm truncate">
+                            {entry.projects?.name || "Sin Proyecto"}
+                        </span>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span className="truncate max-w-[120px]">
+                                {format(new Date(entry.clock_in), "d 'de' MMMM", { locale: es })}
+                            </span>
+                            {entry.total_hours && (
+                                <span className="font-mono font-bold text-primary bg-primary/5 px-1.5 rounded">
+                                    {entry.total_hours.toFixed(2)}h
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="pl-2">
+                    {isExpanded ?
+                        <ChevronUp className="w-5 h-5 text-muted-foreground/70" /> :
+                        <ChevronDown className="w-5 h-5 text-muted-foreground/70" />
+                    }
+                </div>
+            </div>
+
+            {/* Expanded Content */}
+            {isExpanded && (
+                <div className="px-3 pb-3 pt-0 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <div className="h-px bg-border/40 w-full" />
+
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="space-y-1">
+                            <span className="text-muted-foreground/70 uppercase tracking-wider text-[10px] font-bold">Tarea</span>
+                            <div className="font-medium flex items-center gap-1.5 break-words">
+                                {entry.projects?.color && <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: entry.projects.color }} />}
+                                {entry.tasks?.name || "Sin tarea específica"}
+                            </div>
+                        </div>
+                        <div className="space-y-1 text-right">
+                            <span className="text-muted-foreground/70 uppercase tracking-wider text-[10px] font-bold">Horario</span>
+                            <div className="font-mono text-muted-foreground">
+                                {format(new Date(entry.clock_in), "HH:mm")} - {entry.clock_out ? format(new Date(entry.clock_out), "HH:mm") : '...'}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Finalizado label only visible when expanded for context */}
+                    <div className="flex justify-end">
+                        <span className="text-[10px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground font-medium">
+                            Sesión Finalizada
+                        </span>
+                    </div>
+                </div>
+            )}
+        </div>
     )
 }
